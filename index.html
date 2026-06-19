@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ISA Venta">
+  <meta name="description" content="Kit de venta ISA ChatCommerce — Calculadora de segmentación y herramientas para consultores">
+
+  <title>ISA ChatCommerce — Kit Venta v3</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" href="icons/icon-72.png">
+
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-logo">
+      <span class="rocket">🚀</span>
+      <span class="brand">ISA CHATCOMMERCE</span>
+      <span class="version">v3.0</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="app.reiniciar()" title="Nueva calculadora">🔄</button>
+    </div>
+  </header>
+
+  <!-- STEPPER -->
+  <div class="container">
+    <div class="stepper" id="stepper">
+      <!-- Se genera dinámicamente -->
+    </div>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="container" id="main-content">
+    <!-- Se genera dinámicamente -->
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item active" id="nav-calculadora" onclick="app.navegar('calculadora'); return false;">
+      <span class="nav-icon">🧮</span>
+      <span>Calcular</span>
+    </a>
+    <a href="#" class="nav-item" id="nav-historial" onclick="app.navegar('historial'); return false;">
+      <span class="nav-icon">📋</span>
+      <span>Historial</span>
+    </a>
+    <a href="#" class="nav-item" id="nav-herramientas" onclick="app.navegar('herramientas'); return false;">
+      <span class="nav-icon">🛠️</span>
+      <span>Tools</span>
+    </a>
+    <a href="#" class="nav-item" id="nav-config" onclick="app.navegar('config'); return false;">
+      <span class="nav-icon">⚙️</span>
+      <span>Ajustes</span>
+    </a>
+  </nav>
+
+  <!-- SCRIPTS -->
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

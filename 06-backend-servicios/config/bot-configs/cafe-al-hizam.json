@@ -1,0 +1,60 @@
+{
+  "negocio_id": "cafe-al-hizam-001",
+  "nombre": "Café Al Hizam",
+  "idiomas": [
+    "es",
+    "ar",
+    "fr"
+  ],
+  "horario": {
+    "apertura": "08:00",
+    "cierre": "23:00",
+    "dias_cerrado": []
+  },
+  "menu": {
+    "categorias": [
+      {
+        "id": "cafes",
+        "nombre": "Cafés",
+        "productos": [
+          {
+            "id": "cafe-001",
+            "nombre": "Espresso",
+            "precio": 12
+          },
+          {
+            "id": "cafe-002",
+            "nombre": "Cappuccino",
+            "precio": 18
+          },
+          {
+            "id": "cafe-003",
+            "nombre": "Café au lait",
+            "precio": 15
+          }
+        ]
+      },
+      {
+        "id": "tajines",
+        "nombre": "Tajines",
+        "productos": [
+          {
+            "id": "taj-001",
+            "nombre": "Tajine de pollo",
+            "precio": 45
+          },
+          {
+            "id": "taj-002",
+            "nombre": "Tajine de carne",
+            "precio": 55
+          }
+        ]
+      }
+    ]
+  },
+  "respuestas_rapidas": {
+    "saludo": "👋 Bienvenido a Café Al Hizam! ¿Qué deseas hacer?",
+    "horario": "Abrimos todos los días de 8:00 a 23:00. ¡Te esperamos!",
+    "ubicacion": "📍 Estamos en Calle Mohammed V, Tetuán"
+  }
+}

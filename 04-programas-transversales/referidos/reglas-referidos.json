@@ -1,0 +1,84 @@
+{
+  "programa": "Traes 1, Ganas 1",
+  "version": "3.0",
+  "niveles": [
+    {
+      "id": 1,
+      "nombre": "Bronce",
+      "icono": "🥉",
+      "min_referidos": 1,
+      "recompensa_referidor": {
+        "tipo": "mes_gratis",
+        "valor": 1,
+        "descripcion": "1 mes GRATIS de mantenimiento"
+      },
+      "beneficio_referido": {
+        "tipo": "descuento_setup",
+        "valor": 10,
+        "descripcion": "10% descuento en setup"
+      }
+    },
+    {
+      "id": 2,
+      "nombre": "Plata",
+      "icono": "🥈",
+      "min_referidos": 3,
+      "recompensa_referidor": {
+        "tipo": "setup_gratis",
+        "valor": 700,
+        "descripcion": "Setup de siguiente subfase GRATIS (hasta 700 MAD)"
+      },
+      "beneficio_referido": {
+        "tipo": "descuento_setup",
+        "valor": 15,
+        "descripcion": "15% descuento en setup"
+      },
+      "badge": "Embajador Plata"
+    },
+    {
+      "id": 3,
+      "nombre": "Oro",
+      "icono": "🥇",
+      "min_referidos": 5,
+      "recompensa_referidor": {
+        "tipo": "meses_gratis",
+        "valor": 3,
+        "descripcion": "3 meses de mantenimiento GRATIS"
+      },
+      "beneficio_referido": {
+        "tipo": "descuento_setup",
+        "valor": 20,
+        "descripcion": "20% descuento en setup"
+      },
+      "badge": "Embajador Oro"
+    },
+    {
+      "id": 4,
+      "nombre": "Diamante",
+      "icono": "💎",
+      "min_referidos": 10,
+      "recompensa_referidor": {
+        "tipo": "anio_gratis",
+        "valor": 12,
+        "descripcion": "1 año de mantenimiento GRATIS"
+      },
+      "beneficio_referido": {
+        "tipo": "descuento_setup",
+        "valor": 25,
+        "descripcion": "25% descuento en setup"
+      },
+      "badge": "Embajador Diamante",
+      "extras": [
+        "Caso de éxito publicado en web ISA",
+        "Acceso prioritario a nuevas funcionalidades",
+        "Invitación a eventos exclusivos"
+      ]
+    }
+  ],
+  "reglas": {
+    "min_dias_cliente_activo": 30,
+    "max_dias_para_reclamar": 90,
+    "validacion_automatica": true,
+    "notificacion_whatsapp": true
+  }
+}

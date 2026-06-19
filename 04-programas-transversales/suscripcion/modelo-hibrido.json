@@ -1,0 +1,45 @@
+{
+  "version": "3.0",
+  "opciones": [
+    {
+      "id": "basico",
+      "nombre": "Mantenimiento Básico",
+      "precio_mes": 200,
+      "incluye": [
+        "Soporte técnico básico (email)",
+        "Hosting incluido",
+        "Actualizaciones de seguridad",
+        "1 reporte mensual básico"
+      ]
+    },
+    {
+      "id": "proactivo",
+      "nombre": "Mantenimiento Proactivo",
+      "precio_mes": 600,
+      "incluye": [
+        "Todo lo básico",
+        "Contenido mensual (4 posts + 2 reels)",
+        "Optimización continua del chatbot",
+        "Reporte mensual detallado con ROI",
+        "Soporte prioritario (WhatsApp)"
+      ]
+    },
+    {
+      "id": "comision",
+      "nombre": "Comisión por Resultado",
+      "precio_mes": 0,
+      "comision_pct": 5,
+      "tope_maximo_mes": 800,
+      "requisitos": [
+        "Caja registradora o sistema de ventas",
+        "Confirmación diaria de ventas por WhatsApp",
+        "Mínimo 10 pedidos/mes por el bot"
+      ],
+      "incluye": [
+        "Todo lo proactivo",
+        "Sin cuota fija mensual",
+        "Pagas solo si vendes"
+      ]
+    }
+  ]
+}

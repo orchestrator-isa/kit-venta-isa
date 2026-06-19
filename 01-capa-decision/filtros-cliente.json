@@ -1,0 +1,87 @@
+{
+  "p0": {
+    "cin": true,
+    "rib": true,
+    "local": true
+  },
+  "p1_facturacion": {
+    "pobre": {
+      "max": 5000,
+      "pack": "presencia",
+      "setup": 250,
+      "mantenimiento": 200,
+      "flujo": [
+        "1A",
+        "1B",
+        "1C"
+      ],
+      "tiempo": "1 semana"
+    },
+    "pobre-medio": {
+      "min": 5000,
+      "max": 15000,
+      "pack": "whatsapp-pro",
+      "setup": 400,
+      "mantenimiento": 250,
+      "flujo": [
+        "1A",
+        "1B",
+        "1C",
+        "2A"
+      ],
+      "tiempo": "2 semanas"
+    },
+    "estandar": {
+      "min": 15000,
+      "max": 40000,
+      "pack": "completo",
+      "setup": 1200,
+      "mantenimiento": 600,
+      "flujo": [
+        "1A",
+        "1B",
+        "1C",
+        "2A",
+        "2B",
+        "3A",
+        "3B",
+        "3C"
+      ],
+      "tiempo": "3 semanas"
+    },
+    "premium": {
+      "min": 40000,
+      "pack": "growth",
+      "setup": 1500,
+      "mantenimiento": 600,
+      "flujo": [
+        "1A",
+        "1B",
+        "1C",
+        "2A",
+        "2B",
+        "3A",
+        "3B",
+        "3C",
+        "4A",
+        "5A"
+      ],
+      "tiempo": "4 semanas"
+    }
+  },
+  "p2_whatsapp": {
+    "no": "incluir-1a2",
+    "basico": "saltar-1a2",
+    "catalogo": "saltar-1a2-1b"
+  },
+  "p3_maps": {
+    "no": "incluir-1a1",
+    "sin-optimizar": "optimizar-1a1",
+    "optimizado": "saltar-1a1"
+  },
+  "p4_clientes_dia": {
+    "<10": "fase-1-2",
+    "10-30": "fase-1-2-3a",
+    ">30": "fase-3-directo"
+  }
+}

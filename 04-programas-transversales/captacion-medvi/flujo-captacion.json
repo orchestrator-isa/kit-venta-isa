@@ -1,0 +1,36 @@
+{
+  "fuentes": {
+    "organicas": [
+      "Google Maps SEO",
+      "Referidos clientes",
+      "Casos de éxito",
+      "Dashboard visible"
+    ],
+    "ads": [
+      "Google Ads Local",
+      "Facebook/Instagram Ads"
+    ]
+  },
+  "landing": {
+    "titulo": "Tu negocio en Google Maps en 48 horas",
+    "cta": "Solicitar diagnóstico GRATIS",
+    "campos": [
+      "nombre",
+      "telefono",
+      "tipo_negocio"
+    ],
+    "oferta_gancho": true
+  },
+  "conversion": {
+    "paso_1": "Diagnóstico 3 preguntas",
+    "paso_2": "Calculadora segmentación",
+    "paso_3": "Oferta personalizada",
+    "paso_4": "Teleconsulta 15 min (opcional)"
+  },
+  "metricas": {
+    "cac_referidos": 0,
+    "conversion_ads_lead": "3-5%",
+    "conversion_lead_cliente": "20-30%",
+    "tiempo_primer_pago": "0 días (Oferta Gancho)"
+  }
+}

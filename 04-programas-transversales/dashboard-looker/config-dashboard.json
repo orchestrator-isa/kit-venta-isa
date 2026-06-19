@@ -1,0 +1,47 @@
+{
+  "titulo": "Dashboard Salud del Cliente \u2014 ISA",
+  "refresh_interval": "1h",
+  "metricas": [
+    {
+      "nombre": "conversaciones_diarias",
+      "tipo": "counter",
+      "umbral": {
+        "verde": 30,
+        "amarillo": 10,
+        "rojo": 0
+      }
+    },
+    {
+      "nombre": "rese\u00f1as_mes",
+      "tipo": "counter",
+      "umbral": {
+        "verde": 10,
+        "amarillo": 3,
+        "rojo": 0
+      }
+    },
+    {
+      "nombre": "ingresos",
+      "tipo": "trend",
+      "umbral": {
+        "verde": 5,
+        "amarillo": 0,
+        "rojo": -5
+      }
+    },
+    {
+      "nombre": "salud",
+      "tipo": "composite",
+      "reglas": {
+        "verde": "conversaciones > 30 AND rese\u00f1as > 5 AND ingresos > 0",
+        "amarillo": "conversaciones BETWEEN 10-30 OR rese\u00f1as BETWEEN 3-5",
+        "rojo": "conversaciones < 10 OR rese\u00f1as < 3 OR ingresos < 0"
+      }
+    }
+  ],
+  "acciones": {
+    "verde": "Upsell Fase 3",
+    "amarillo": "Retenci\u00f3n \u2014 llamar",
+    "rojo": "Intervenci\u00f3n urgente"
+  }
+}

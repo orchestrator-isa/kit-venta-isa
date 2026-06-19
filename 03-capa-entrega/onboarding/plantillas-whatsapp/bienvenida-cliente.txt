@@ -1,0 +1,12 @@
+👋 ¡Bienvenido a [NOMBRE_NEGOCIO]!
+
+Soy el asistente digital de [NOMBRE_DUEÑO]. Estoy aquí para ayudarte 24/7.
+
+¿Qué deseas hacer?
+
+📋 Ver menú
+🛒 Hacer pedido  
+📅 Reservar mesa/cita
+❓ Preguntar algo
+
+Responde con el número o la palabra.

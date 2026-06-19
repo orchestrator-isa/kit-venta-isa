@@ -1,0 +1,43 @@
+{
+  "version": "3.0",
+  "whatsapp": {
+    "api_version": "v20.0",
+    "ventana_horas": 24
+  },
+  "openai": {
+    "model": "gpt-4o-mini",
+    "max_tokens": 500,
+    "temperature": 0.7
+  },
+  "database": {
+    "pool_size": 10
+  },
+  "pricing": {
+    "presencia": {
+      "setup": 250,
+      "mantenimiento": 200
+    },
+    "whatsapp-pro": {
+      "setup": 400,
+      "mantenimiento": 250
+    },
+    "completo": {
+      "setup": 1200,
+      "mantenimiento": 600
+    },
+    "growth": {
+      "setup": 1500,
+      "mantenimiento": 600
+    },
+    "enterprise": {
+      "setup": 2500,
+      "mantenimiento": 1000
+    }
+  },
+  "oferta_gancho": {
+    "activa": true,
+    "limite": 10,
+    "mantenimiento": 200,
+    "dias_prueba": 30
+  }
+}

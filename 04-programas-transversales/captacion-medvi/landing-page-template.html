@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu negocio en Google Maps en 48h — ISA ChatCommerce</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0e17;color:#e5e7eb}
+.hero{text-align:center;padding:60px 20px;background:linear-gradient(135deg,#00E5FF22,#00FF8822)}
+.hero h1{font-size:32px;background:linear-gradient(90deg,#00E5FF,#00FF88);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:#9ca3af;margin:16px 0}
+.cta{display:inline-block;padding:16px 32px;background:linear-gradient(135deg,#00E5FF,#00FF88);color:#0a0e17;text-decoration:none;border-radius:12px;font-weight:700;margin-top:20px}
+.form{max-width:400px;margin:40px auto;padding:24px;background:#111827;border-radius:16px}
+.form input{width:100%;padding:14px;margin:8px 0;background:#0a0e17;border:1px solid #00E5FF44;color:#fff;border-radius:10px}
+.form button{width:100%;padding:16px;background:linear-gradient(135deg,#00E5FF,#00FF88);border:none;border-radius:10px;color:#0a0e17;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="hero">
+<h1>🚀 Tu negocio en Google Maps en 48 horas</h1>
+<p>Sin saber de internet. Sin invertir miles. Solo resultados.</p>
+<a href="#form" class="cta">Solicitar diagnóstico GRATIS</a>
+</div>
+<div class="form" id="form">
+<h3>📋 Cuéntanos de tu negocio</h3>
+<input type="text" placeholder="Tu nombre" id="nombre">
+<input type="tel" placeholder="Teléfono WhatsApp" id="telefono">
+<input type="text" placeholder="Tipo de negocio (restaurante, clínica...)" id="tipo">
+<button onclick="enviar()">Quiero mi diagnóstico</button>
+</div>
+<script>
+function enviar(){
+  const data={nombre:$('#nombre').value,telefono:$('#telefono').value,tipo:$('#tipo').value};
+  fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+  .then(()=>alert('¡Gracias! Te contactamos en menos de 24h por WhatsApp.'))
+}
+function $(id){return document.getElementById(id)}
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "kit": "kit-venta-isa",
+  "version": "3.0",
+  "fecha": "2026-06-20",
+  "total_archivos": 60,
+  "carpetas": 7,
+  "componentes_principales": [
+    "PWA Calculadora",
+    "Contratos modulares",
+    "Scripts de venta",
+    "Checklists de entrega",
+    "Backend FastAPI",
+    "Dashboard Looker",
+    "Kit de emergencia"
+  ],
+  "stack_tecnico": {
+    "frontend": "HTML5 + CSS3 + Vanilla JS (PWA)",
+    "backend": "FastAPI + asyncpg + Neon DB",
+    "bot": "WhatsApp Cloud API + ManyChat + OpenAI GPT-4",
+    "dashboard": "Looker Studio + Google Sheets",
+    "hosting": "Render (backend) + Netlify/GitHub Pages (PWA)"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "template-reporte.json": {
+    "version": "3.0",
+    "periodo": "{{MES}} {{AÑO}}",
+    "negocio": {
+      "nombre": "{{NOMBRE_NEGOCIO}}",
+      "pack": "{{PACK_ACTUAL}}",
+      "nivel": "{{NIVEL_CLIENTE}}"
+    },
+    "metricas": {
+      "conversaciones_mes": "{{CONVERSACIONES}}",
+      "conversaciones_vs_mes_anterior": "{{PCT_CAMBIO_CONV}}",
+      "pedidos_mes": "{{PEDIDOS}}",
+      "pedidos_vs_mes_anterior": "{{PCT_CAMBIO_PEDIDOS}}",
+      "valor_ventas": "{{VALOR_VENTAS}}",
+      "resenas_nuevas": "{{RESENAS}}",
+      "posicion_maps": "{{POSICION_MAPS}}"
+    },
+    "roi": {
+      "inversion_mes": "{{MANTENIMIENTO}}",
+      "ventas_generadas": "{{VALOR_VENTAS}}",
+      "roi_porcentaje": "{{ROI_CALCULADO}}"
+    },
+    "logros": [
+      {
+        "nombre": "50 reseñas 5⭐",
+        "desbloqueado": "{{LOGRO_50_RESENAS}}"
+      },
+      {
+        "nombre": "Top 3 Google Maps",
+        "desbloqueado": "{{LOGRO_TOP3}}"
+      },
+      {
+        "nombre": "100 pedidos/mes",
+        "progreso": "{{PROGRESO_100_PEDIDOS}}/100"
+      }
+    ],
+    "recomendacion": "{{RECOMENDACION_UPSELL}}"
+  }
+}

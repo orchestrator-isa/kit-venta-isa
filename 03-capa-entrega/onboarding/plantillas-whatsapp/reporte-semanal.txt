@@ -1,0 +1,12 @@
+📊 REPORTE SEMANAL — [NOMBRE_NEGOCIO]
+Semana del [FECHA_INICIO] al [FECHA_FIN]
+
+💬 Conversaciones atendidas: [NUMERO]
+🛒 Pedidos generados: [NUMERO]
+💰 Valor estimado: [MONTO] MAD
+⭐ Nuevas reseñas: [NUMERO]
+📈 Posición en Maps: #[NUMERO]
+
+¿Tienes alguna pregunta o quieres que ajustemos algo?
+
+Tu consultor ISA 🤝
