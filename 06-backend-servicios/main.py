@@ -157,6 +157,16 @@ async def get_db():
         yield conn
 
 # ===== ENDPOINT RAÍZ =====
+# ===== CALCULADORA DE SEGMENTACIÓN =====
+@app.get("/calculadora", response_class=HTMLResponse)
+async def calculadora():
+    calculadora_path = os.path.join(os.path.dirname(__file__), "static", "calculadora-segmentacion.html")
+    if os.path.exists(calculadora_path):
+        with open(calculadora_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    raise HTTPException(status_code=404, detail="Calculadora no encontrada")
+
+
 @app.get("/", response_class=JSONResponse)
 async def root():
     return {
