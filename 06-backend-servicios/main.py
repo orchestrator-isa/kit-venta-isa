@@ -345,7 +345,31 @@ async def metricas_cliente(cliente_id: int, conn=Depends(get_db)):
 async def health():
     return {"status": "ok", "version": "3.1", "db_connected": pool is not None, "timestamp": datetime.now().isoformat()}
 
+@app.get("/api/debug/db")
+async def debug_db():
+    """Endpoint de diagnóstico para ver estado de la base de datos"""
+    if not pool:
+        return {
+            "db_connected": False,
+            "error": "Pool no inicializado. NEON_DB_URL puede estar vacía o la DB no respondió.",
+            "neon_db_url_set": bool(NEON_DB_URL),
+            "tip": "Espera 30 segundos y recarga. Neon free tier se duerme."
+        }
+    try:
+        async with pool.acquire() as conn:
+            result = await conn.fetchval("SELECT COUNT(*) FROM leads_scrap")
+            return {
+                "db_connected": True,
+                "leads_count": result,
+                "pool_status": "active"
+            }
+    except Exception as e:
+        return {
+            "db_connected": False,
+            "error": str(e),
+            "tip": "La tabla leads_scrap puede no existir todavía. Espera el primer deploy."
+        }
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
-
