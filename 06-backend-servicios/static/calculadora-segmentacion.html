@@ -155,6 +155,15 @@
             font-size: 0.85rem;
             color: var(--gold);
         }
+        .modo-box {
+            background: rgba(0,229,255,0.1);
+            border: 1px solid var(--cyan);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+        .modo-box h3 { color: var(--cyan); font-size: 0.95rem; margin-bottom: 8px; }
+        .modo-box p { color: #aaa; font-size: 0.8rem; margin-bottom: 12px; }
     </style>
 <base target="_blank">
 </head>
@@ -172,11 +181,9 @@
     <div class="step active" id="step-p0">
         <h2><span class="step-number">P0</span>¿Qué sabés del negocio?</h2>
 
-        <div style="background: rgba(0,229,255,0.1); border: 1px solid var(--cyan); border-radius: 10px; padding: 14px; margin-bottom: 16px;">
-            <h3 style="color: var(--cyan); font-size: 0.95rem; margin-bottom: 8px;">📍 Modo Primera Visita</h3>
-            <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 12px;">
-                Usá esto cuando todavía no conocés al dueño. Anotá lo que veas y planificá el regreso.
-            </p>
+        <div class="modo-box">
+            <h3>📍 Modo Primera Visita</h3>
+            <p>Usá esto cuando todavía no conocés al dueño. Anotá lo que veas y planificá el regreso.</p>
             <button class="btn" onclick="activarModoPrimeraVisita()" style="background: var(--cyan); color: var(--dark);">
                 📝 Activar modo "Primera Visita"
             </button>
@@ -368,6 +375,7 @@
     </div>
 
     <script>
+        const API_URL = window.location.origin;
         let respuestas = { p0: false, p1: null, p2: null, p3: null, p4: null, cin: null, rib: null };
 
         const PACKS = {
@@ -396,7 +404,7 @@
             showStep('step-primera-visita');
         }
 
-        function guardarPrimeraVisita() {
+        async function guardarPrimeraVisita() {
             const nombreNegocio = document.getElementById('pv-negocio').value.trim();
             const direccion = document.getElementById('pv-direccion').value.trim();
             const notas = document.getElementById('pv-notas').value.trim();
@@ -410,33 +418,56 @@
             const datos = {
                 nombre_negocio: nombreNegocio,
                 direccion: direccion,
-                notas: notas,
-                horario: horario,
-                tipo: 'primera_visita',
-                fecha: new Date().toISOString(),
-                siguiente_paso: 'volver_manana'
+                notas: notas + (horario ? ' | Horario: ' + horario : ''),
+                tipo_negocio: 'primera_visita',
+                segmento: 'desconocido',
+                pack_asignado: 'pendiente',
+                caso: 'M0',
+                fuente: 'calculadora_primera_visita',
+                estado_contacto: 'no_contactado',
+                cin: null,
+                rib: null
             };
 
-            // Guardar en localStorage para no perderlo
-            let visitas = JSON.parse(localStorage.getItem('isa_visitas') || '[]');
-            visitas.push(datos);
-            localStorage.setItem('isa_visitas', JSON.stringify(visitas));
+            // Guardar en DB
+            try {
+                const res = await fetch(`${API_URL}/api/leads`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                const result = await res.json();
 
-            // Mostrar resumen
-            const resumen = document.getElementById('pv-resumen');
-            resumen.innerHTML = `
-                <div style="background: rgba(0,255,136,0.1); border: 1px solid var(--green); border-radius: 10px; padding: 16px; margin-top: 16px;">
-                    <h3 style="color: var(--green); margin-bottom: 12px;">✅ Visita guardada</h3>
-                    <p><strong>Negocio:</strong> ${nombreNegocio}</p>
-                    <p><strong>Dirección:</strong> ${direccion || 'No anotada'}</p>
-                    <p><strong>Notas:</strong> ${notas || 'Ninguna'}</p>
-                    <p><strong>Horario:</strong> ${horario || 'No anotado'}</p>
-                    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 12px 0;">
-                    <p style="color: var(--gold);">📋 Acción: Volver mañana, preguntar por el dueño</p>
-                    <p style="color: var(--gold);">💡 Llevar: Tarjeta de visita + sticker QR</p>
-                    <button class="btn" onclick="nuevaVisita()" style="margin-top: 12px;">➕ Nueva visita</button>
-                </div>
-            `;
+                if (result.status === 'guardado_en_db') {
+                    const resumen = document.getElementById('pv-resumen');
+                    resumen.innerHTML = `
+                        <div style="background: rgba(0,255,136,0.1); border: 1px solid var(--green); border-radius: 10px; padding: 16px; margin-top: 16px;">
+                            <h3 style="color: var(--green); margin-bottom: 12px;">✅ Visita guardada en sistema</h3>
+                            <p><strong>Negocio:</strong> ${nombreNegocio}</p>
+                            <p><strong>Dirección:</strong> ${direccion || 'No anotada'}</p>
+                            <p><strong>Notas:</strong> ${notas || 'Ninguna'}</p>
+                            <p><strong>Horario:</strong> ${horario || 'No anotado'}</p>
+                            <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 12px 0;">
+                            <p style="color: var(--gold);">📋 Acción: Volver mañana, preguntar por el dueño</p>
+                            <p style="color: var(--gold);">💡 Llevar: Tarjeta de visita + sticker QR</p>
+                            <p style="color: var(--cyan); font-size: 0.8rem;">🔗 Ver en: ${API_URL}/admin</p>
+                            <button class="btn" onclick="nuevaVisita()" style="margin-top: 12px;">➕ Nueva visita</button>
+                        </div>
+                    `;
+                } else {
+                    // Fallback a localStorage
+                    let visitas = JSON.parse(localStorage.getItem('isa_visitas') || '[]');
+                    visitas.push(datos);
+                    localStorage.setItem('isa_visitas', JSON.stringify(visitas));
+                    alert('⚠️ Guardado localmente (modo offline). Sincronizar después.');
+                }
+            } catch (e) {
+                // Fallback a localStorage
+                let visitas = JSON.parse(localStorage.getItem('isa_visitas') || '[]');
+                visitas.push(datos);
+                localStorage.setItem('isa_visitas', JSON.stringify(visitas));
+                alert('⚠️ Sin conexión. Guardado localmente. Sincronizar después.');
+            }
         }
 
         function nuevaVisita() {
@@ -523,7 +554,6 @@
             badge.textContent = pack.nombre + ' (' + pack.setup + ' MAD)';
             badge.className = 'pack-badge pack-' + pack.pack;
 
-            // Mostrar alerta si faltan datos legales
             const alertaLegales = document.getElementById('alerta-legales');
             if (!respuestas.cin || !respuestas.rib) {
                 alertaLegales.style.display = 'block';
@@ -557,23 +587,24 @@
                 nombre_dueno: document.getElementById('nombre-dueno').value,
                 telefono: document.getElementById('telefono').value,
                 tipo_negocio: document.getElementById('tipo-negocio').value,
-                cin: respuestas.cin,
-                rib: respuestas.rib,
+                cin: respuestas.cin || document.getElementById('cin').value || null,
+                rib: respuestas.rib || document.getElementById('rib').value || null,
                 segmento: respuestas.p1,
                 pack_asignado: PACKS[respuestas.p1].pack,
-                p2_whatsapp: respuestas.p2,
-                p3_maps: respuestas.p3,
-                p4_clientes: respuestas.p4,
-                datos_completos: !!(respuestas.cin && respuestas.rib)
+                caso: respuestas.p1 === 'pobre' ? 'A' : respuestas.p1 === 'pobre-medio' ? 'B' : respuestas.p1 === 'estandar' ? 'C' : 'E',
+                fuente: 'calculadora',
+                estado_contacto: 'no_contactado',
+                notas: 'P2:' + respuestas.p2 + ' | P3:' + respuestas.p3 + ' | P4:' + respuestas.p4
             };
 
             try {
-                const res = await fetch('https://kit-venta-isa.onrender.com/api/leads', {
+                const res = await fetch(`${API_URL}/api/leads`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
                 });
-                if (res.ok) {
+                const result = await res.json();
+                if (result.status === 'guardado_en_db') {
                     alert('✅ Lead guardado en el sistema');
                 } else {
                     alert('⚠️ Error guardando. Copia los datos manualmente.');
