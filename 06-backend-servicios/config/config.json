@@ -1,43 +1,75 @@
 {
+  "empresa": "ISA ChatCommerce",
   "version": "3.0",
-  "whatsapp": {
-    "api_version": "v20.0",
-    "ventana_horas": 24
-  },
-  "openai": {
-    "model": "gpt-4o-mini",
-    "max_tokens": 500,
-    "temperature": 0.7
-  },
-  "database": {
-    "pool_size": 10
-  },
-  "pricing": {
+  "moneda": "MAD",
+  "pais": "Marruecos",
+  "idiomas": ["es", "ar", "fr", "en"],
+  "packs": {
     "presencia": {
+      "nombre": "Presencia Digital",
       "setup": 250,
-      "mantenimiento": 200
+      "mensual": 200,
+      "incluye": ["Google Maps", "WhatsApp Business", "QR básico"]
     },
     "whatsapp-pro": {
+      "nombre": "WhatsApp Pro",
       "setup": 400,
-      "mantenimiento": 250
+      "mensual": 400,
+      "incluye": ["Catálogo WA", "Respuestas automáticas", "Menú digital"]
     },
     "completo": {
+      "nombre": "Completo",
       "setup": 1200,
-      "mantenimiento": 600
+      "mensual": 600,
+      "incluye": ["Bot IA", "Reservas", "CRM básico", "Dashboard"]
     },
     "growth": {
+      "nombre": "Growth",
       "setup": 1500,
-      "mantenimiento": 600
+      "mensual": 1000,
+      "incluye": ["Todo lo anterior", "Referidos", "Looker Studio", "Soporte prioritario"]
     },
     "enterprise": {
+      "nombre": "Enterprise",
       "setup": 2500,
-      "mantenimiento": 1000
+      "mensual": 2000,
+      "incluye": ["Todo lo anterior", "API personalizada", "SLA", "Consultor dedicado"]
     }
   },
-  "oferta_gancho": {
-    "activa": true,
-    "limite": 10,
-    "mantenimiento": 200,
-    "dias_prueba": 30
+  "segmentacion": {
+    "p0_cin_rib": true,
+    "p1_facturacion": {
+      "pobre": {"max": 5000, "pack": "presencia", "setup": 250},
+      "pobre-medio": {"min": 5000, "max": 15000, "pack": "whatsapp-pro", "setup": 400},
+      "estandar": {"min": 15000, "max": 40000, "pack": "completo", "setup": 1200},
+      "premium": {"min": 40000, "pack": "growth", "setup": 1500}
+    },
+    "p2_whatsapp": {
+      "no": "incluir-1a2",
+      "basico": "saltar-1a2",
+      "catalogo": "saltar-1a2-1b"
+    },
+    "p3_maps": {
+      "no": "incluir-1a1",
+      "sin-optimizar": "optimizar-1a1",
+      "optimizado": "saltar-1a1"
+    },
+    "p4_clientes_dia": {
+      "<10": "fase-1-2",
+      "10-30": "fase-1-2-3a",
+      ">30": "fase-3-directo"
+    }
+  },
+  "triggers": {
+    "upsell_30pct": {"dias": 15, "umbral": 0.30},
+    "semi_digital_30msg": {"mensajes_dia": 30},
+    "escalamiento_growth": {"señales": 3},
+    "cliente_critico": {"dias_sin_respuesta": 7}
+  },
+  "whatsapp": {
+    "webhook_path": "/webhook",
+    "verify_token_env": "META_VERIFY_TOKEN",
+    "api_version": "v18.0",
+    "timeout_respuesta": 30
   }
 }

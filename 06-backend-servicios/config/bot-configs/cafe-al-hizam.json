@@ -1,60 +1,43 @@
 {
-  "negocio_id": "cafe-al-hizam-001",
-  "nombre": "Café Al Hizam",
-  "idiomas": [
-    "es",
-    "ar",
-    "fr"
-  ],
+  "negocio": "Café Al Hizam Al Akhdar",
+  "telefono": "+212600000000",
+  "tipo": "restaurante",
+  "zona": "Tetouan",
+  "idioma_default": "es",
+  "idiomas_soportados": ["es", "ar", "fr"],
   "horario": {
     "apertura": "08:00",
     "cierre": "23:00",
-    "dias_cerrado": []
+    "dias_abierto": ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"]
   },
   "menu": {
-    "categorias": [
-      {
-        "id": "cafes",
-        "nombre": "Cafés",
-        "productos": [
-          {
-            "id": "cafe-001",
-            "nombre": "Espresso",
-            "precio": 12
-          },
-          {
-            "id": "cafe-002",
-            "nombre": "Cappuccino",
-            "precio": 18
-          },
-          {
-            "id": "cafe-003",
-            "nombre": "Café au lait",
-            "precio": 15
-          }
-        ]
-      },
-      {
-        "id": "tajines",
-        "nombre": "Tajines",
-        "productos": [
-          {
-            "id": "taj-001",
-            "nombre": "Tajine de pollo",
-            "precio": 45
-          },
-          {
-            "id": "taj-002",
-            "nombre": "Tajine de carne",
-            "precio": 55
-          }
-        ]
-      }
-    ]
+    "categorias": ["desayuno", "almuerzo", "cena", "bebidas", "postres"],
+    "moneda": "MAD",
+    "envio_disponible": true,
+    "tiempo_preparacion_min": 20
+  },
+  "reservas": {
+    "activas": true,
+    "max_personas": 20,
+    "zonas": ["terraza", "interior", "vip"],
+    "anticipacion_horas": 2
   },
   "respuestas_rapidas": {
-    "saludo": "👋 Bienvenido a Café Al Hizam! ¿Qué deseas hacer?",
-    "horario": "Abrimos todos los días de 8:00 a 23:00. ¡Te esperamos!",
-    "ubicacion": "📍 Estamos en Calle Mohammed V, Tetuán"
-  }
+    "bienvenida": "¡Bienvenido a Café Al Hizam Al Akhdar! 🍵 ¿Qué te gustaría hacer?",
+    "menu": "Aquí tienes nuestro menú: [LINK]",
+    "reserva": "Para reservar, dime: ¿cuántas personas y a qué hora?",
+    "pedido": "¿Qué te gustaría pedir? Puedes escribirme o ver el menú.",
+    "horario": "Abrimos todos los días de 8:00 a 23:00 🕐",
+    "ubicacion": "📍 Estamos en Tetouan, zona [ZONA]. Google Maps: [LINK]"
+  },
+  "flujo_reservas": {
+    "fases": ["res_p", "res_f", "res_h", "res_c"],
+    "res_p": "¿Para cuántas personas?",
+    "res_f": "¿Qué día y hora prefieres?",
+    "res_h": "¿Prefieres terraza, interior o VIP?",
+    "res_c": "¡Reserva confirmada! Código: {codigo}"
+  },
+  "pack_actual": "completo",
+  "setup_pagado": 1200,
+  "mensualidad": 600
 }
