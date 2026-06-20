@@ -154,18 +154,22 @@
         <div class="progress-fill" id="progress" style="width: 0%"></div>
     </div>
 
-    <!-- P0: CIN + RIB -->
+    <!-- P0: CIN + RIB (OPCIONAL) -->
     <div class="step active" id="step-p0">
-        <h2><span class="step-number">P0</span>Requisitos legales</h2>
+        <h2><span class="step-number">P0</span>Requisitos legales <span style="color: var(--cyan); font-size: 0.75rem;">(opcional)</span></h2>
+        <p style="color: #888; font-size: 0.8rem; margin-bottom: 12px;">
+            Si el cliente no quiere dar estos datos ahora, podés saltear este paso y pedirlos al firmar el contrato.
+        </p>
         <div class="input-group">
-            <label>CIN (Carte d'Identité Nationale)</label>
+            <label>CIN (Carte d'Identité Nationale) <span style="color: #666;">- opcional</span></label>
             <input type="text" id="cin" placeholder="AB123456" maxlength="20">
         </div>
         <div class="input-group">
-            <label>RIB (Relevé d'Identité Bancaire)</label>
+            <label>RIB (Relevé d'Identité Bancaire) <span style="color: #666;">- opcional</span></label>
             <input type="text" id="rib" placeholder="007 12345 000 12345678901 12" maxlength="50">
         </div>
-        <button class="btn" onclick="validarP0()">Validar P0</button>
+        <button class="btn" onclick="validarP0()" style="margin-bottom: 8px;">✅ Validar y continuar</button>
+        <button class="btn" onclick="saltearP0()" style="background: var(--gray); border: 1px solid var(--cyan); color: var(--cyan);">⏭️ Saltear (pedir después)</button>
     </div>
 
     <!-- P1: Facturación -->
@@ -292,6 +296,9 @@
         <div style="margin-top: 12px;">
             <span id="res-badge" class="pack-badge"></span>
         </div>
+        <div id="alerta-legales" style="display: none; margin-top: 12px; padding: 10px; background: rgba(255,215,0,0.1); border: 1px solid var(--gold); border-radius: 8px; font-size: 0.85rem; color: var(--gold);">
+            ⚠️ <strong>Faltan datos legales:</strong> Pedir CIN y RIB al firmar el contrato.
+        </div>
         <div class="actions">
             <button class="btn-whatsapp" onclick="compartirWhatsApp()">📱 Compartir</button>
             <button class="btn-email" onclick="guardarLead()">💾 Guardar</button>
@@ -321,11 +328,19 @@
         function validarP0() {
             const cin = document.getElementById('cin').value.trim();
             const rib = document.getElementById('rib').value.trim();
-            if (!cin || !rib) {
-                alert('Completa CIN y RIB para continuar');
-                return;
-            }
+            // P0 es opcional - si no da datos, guardamos vacío pero marcamos como completado
             respuestas.p0 = true;
+            respuestas.cin = cin || null;
+            respuestas.rib = rib || null;
+            updateProgress();
+            document.getElementById('step-p0').classList.remove('active');
+            document.getElementById('step-p1').classList.add('active');
+        }
+
+        function saltearP0() {
+            respuestas.p0 = true;
+            respuestas.cin = null;
+            respuestas.rib = null;
             updateProgress();
             document.getElementById('step-p0').classList.remove('active');
             document.getElementById('step-p1').classList.add('active');
@@ -401,6 +416,14 @@
             badge.textContent = pack.nombre + ' (' + pack.setup + ' MAD)';
             badge.className = 'pack-badge pack-' + pack.pack;
 
+            // Mostrar alerta si faltan datos legales
+            const alertaLegales = document.getElementById('alerta-legales');
+            if (!respuestas.cin || !respuestas.rib) {
+                alertaLegales.style.display = 'block';
+            } else {
+                alertaLegales.style.display = 'none';
+            }
+
             document.getElementById('resultado').classList.add('active');
             document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
         }
@@ -427,13 +450,14 @@
                 nombre_dueno: document.getElementById('nombre-dueno').value,
                 telefono: document.getElementById('telefono').value,
                 tipo_negocio: document.getElementById('tipo-negocio').value,
-                cin: document.getElementById('cin').value,
-                rib: document.getElementById('rib').value,
+                cin: respuestas.cin || document.getElementById('cin').value || null,
+                rib: respuestas.rib || document.getElementById('rib').value || null,
                 segmento: respuestas.p1,
                 pack_asignado: PACKS[respuestas.p1].pack,
                 p2_whatsapp: respuestas.p2,
                 p3_maps: respuestas.p3,
-                p4_clientes: respuestas.p4
+                p4_clientes: respuestas.p4,
+                datos_completos: !!(respuestas.cin && respuestas.rib)
             };
 
             try {
