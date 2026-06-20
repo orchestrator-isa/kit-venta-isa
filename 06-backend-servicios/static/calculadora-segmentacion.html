@@ -94,6 +94,11 @@
             margin-top: 8px;
         }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-secondary {
+            background: var(--light-gray);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+        }
         .result {
             background: var(--gray);
             border-radius: 12px;
@@ -141,6 +146,15 @@
             border-radius: 2px;
             transition: width 0.3s;
         }
+        .alerta {
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--gold);
+        }
     </style>
 <base target="_blank">
 </head>
@@ -169,7 +183,7 @@
             <input type="text" id="rib" placeholder="007 12345 000 12345678901 12" maxlength="50">
         </div>
         <button class="btn" onclick="validarP0()" style="margin-bottom: 8px;">✅ Validar y continuar</button>
-        <button class="btn" onclick="saltearP0()" style="background: var(--gray); border: 1px solid var(--cyan); color: var(--cyan);">⏭️ Saltear (pedir después)</button>
+        <button class="btn btn-secondary" onclick="saltearP0()">⏭️ Saltear (pedir después)</button>
     </div>
 
     <!-- P1: Facturación -->
@@ -244,31 +258,39 @@
         </div>
     </div>
 
-    <!-- Datos del negocio -->
+    <!-- DATOS DEL PROSPECTO -->
     <div class="step" id="step-datos">
         <h2><span class="step-number">✓</span>Datos del prospecto</h2>
         <div class="input-group">
-            <label>Nombre del negocio</label>
-            <input type="text" id="nombre-negocio" placeholder="Café Al Hizam">
+            <label>Nombre del negocio *</label>
+            <input type="text" id="nombre-negocio" placeholder="Ej: Electro El Kaouar">
         </div>
         <div class="input-group">
-            <label>Nombre del dueño</label>
-            <input type="text" id="nombre-dueno" placeholder="Ahmed Benali">
+            <label>Nombre del dueño *</label>
+            <input type="text" id="nombre-dueno" placeholder="Ej: Ahmed Benali">
         </div>
         <div class="input-group">
-            <label>Teléfono WhatsApp</label>
+            <label>Teléfono WhatsApp *</label>
             <input type="tel" id="telefono" placeholder="+212 600 000 000">
         </div>
         <div class="input-group">
             <label>Tipo de negocio</label>
-            <input type="text" id="tipo-negocio" placeholder="restaurante, clínica, tienda...">
+            <input type="text" id="tipo-negocio" placeholder="restaurante, tienda, clínica...">
         </div>
         <button class="btn" onclick="generarResultado()">🎯 Generar Propuesta</button>
     </div>
 
-    <!-- Resultado -->
+    <!-- RESULTADO -->
     <div class="result" id="resultado">
         <h2>🎯 Propuesta personalizada</h2>
+        <div class="result-item">
+            <span>Negocio</span>
+            <span id="res-negocio">-</span>
+        </div>
+        <div class="result-item">
+            <span>Dueño</span>
+            <span id="res-dueno">-</span>
+        </div>
         <div class="result-item">
             <span>Segmento</span>
             <span id="res-segmento">-</span>
@@ -296,7 +318,7 @@
         <div style="margin-top: 12px;">
             <span id="res-badge" class="pack-badge"></span>
         </div>
-        <div id="alerta-legales" style="display: none; margin-top: 12px; padding: 10px; background: rgba(255,215,0,0.1); border: 1px solid var(--gold); border-radius: 8px; font-size: 0.85rem; color: var(--gold);">
+        <div id="alerta-legales" class="alerta" style="display: none;">
             ⚠️ <strong>Faltan datos legales:</strong> Pedir CIN y RIB al firmar el contrato.
         </div>
         <div class="actions">
@@ -306,7 +328,7 @@
     </div>
 
     <script>
-        let respuestas = { p0: false, p1: null, p2: null, p3: null, p4: null };
+        let respuestas = { p0: false, p1: null, p2: null, p3: null, p4: null, cin: null, rib: null };
 
         const PACKS = {
             'pobre': { nombre: 'Presencia Digital', setup: 250, mensual: 200, pack: 'presencia', tiempo: '1 semana', flujo: '1A.1 → 1A.2' },
@@ -314,6 +336,11 @@
             'estandar': { nombre: 'Completo', setup: 1200, mensual: 600, pack: 'completo', tiempo: '3 semanas', flujo: '1A.1 → 1B → 1C → 3A → 3B → 3C' },
             'premium': { nombre: 'Growth', setup: 1500, mensual: 1000, pack: 'growth', tiempo: '4 semanas', flujo: '1A.1 → 1B → 1C → 2A → 2B → 3A → 3B → 3C → 4A → 5A → 5B' }
         };
+
+        function showStep(stepId) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+        }
 
         function updateProgress() {
             let completed = 0;
@@ -326,24 +353,19 @@
         }
 
         function validarP0() {
-            const cin = document.getElementById('cin').value.trim();
-            const rib = document.getElementById('rib').value.trim();
-            // P0 es opcional - si no da datos, guardamos vacío pero marcamos como completado
+            respuestas.cin = document.getElementById('cin').value.trim() || null;
+            respuestas.rib = document.getElementById('rib').value.trim() || null;
             respuestas.p0 = true;
-            respuestas.cin = cin || null;
-            respuestas.rib = rib || null;
             updateProgress();
-            document.getElementById('step-p0').classList.remove('active');
-            document.getElementById('step-p1').classList.add('active');
+            showStep('step-p1');
         }
 
         function saltearP0() {
-            respuestas.p0 = true;
             respuestas.cin = null;
             respuestas.rib = null;
+            respuestas.p0 = true;
             updateProgress();
-            document.getElementById('step-p0').classList.remove('active');
-            document.getElementById('step-p1').classList.add('active');
+            showStep('step-p1');
         }
 
         function selectP1(valor, el) {
@@ -351,10 +373,7 @@
             document.querySelectorAll('#step-p1 .option').forEach(o => o.classList.remove('selected'));
             el.classList.add('selected');
             updateProgress();
-            setTimeout(() => {
-                document.getElementById('step-p1').classList.remove('active');
-                document.getElementById('step-p2').classList.add('active');
-            }, 300);
+            setTimeout(() => showStep('step-p2'), 300);
         }
 
         function selectP2(valor, el) {
@@ -362,10 +381,7 @@
             document.querySelectorAll('#step-p2 .option').forEach(o => o.classList.remove('selected'));
             el.classList.add('selected');
             updateProgress();
-            setTimeout(() => {
-                document.getElementById('step-p2').classList.remove('active');
-                document.getElementById('step-p3').classList.add('active');
-            }, 300);
+            setTimeout(() => showStep('step-p3'), 300);
         }
 
         function selectP3(valor, el) {
@@ -373,10 +389,7 @@
             document.querySelectorAll('#step-p3 .option').forEach(o => o.classList.remove('selected'));
             el.classList.add('selected');
             updateProgress();
-            setTimeout(() => {
-                document.getElementById('step-p3').classList.remove('active');
-                document.getElementById('step-p4').classList.add('active');
-            }, 300);
+            setTimeout(() => showStep('step-p4'), 300);
         }
 
         function selectP4(valor, el) {
@@ -384,10 +397,7 @@
             document.querySelectorAll('#step-p4 .option').forEach(o => o.classList.remove('selected'));
             el.classList.add('selected');
             updateProgress();
-            setTimeout(() => {
-                document.getElementById('step-p4').classList.remove('active');
-                document.getElementById('step-datos').classList.add('active');
-            }, 300);
+            setTimeout(() => showStep('step-datos'), 300);
         }
 
         function generarResultado() {
@@ -396,7 +406,7 @@
             const telefono = document.getElementById('telefono').value.trim();
 
             if (!nombreNegocio || !nombreDueno || !telefono) {
-                alert('Completa todos los datos del negocio');
+                alert('Completa los campos obligatorios (*): Nombre del negocio, Nombre del dueño, Teléfono');
                 return;
             }
 
@@ -405,6 +415,8 @@
                             respuestas.p1 === 'pobre-medio' ? 'POBRE-MEDIO' :
                             respuestas.p1 === 'estandar' ? 'ESTÁNDAR' : 'PREMIUM';
 
+            document.getElementById('res-negocio').textContent = nombreNegocio;
+            document.getElementById('res-dueno').textContent = nombreDueno;
             document.getElementById('res-segmento').textContent = segmento;
             document.getElementById('res-pack').textContent = pack.nombre;
             document.getElementById('res-setup').textContent = pack.setup + ' MAD';
@@ -433,15 +445,15 @@
             const nombreNegocio = document.getElementById('nombre-negocio').value;
             const telefono = document.getElementById('telefono').value.replace(/\D/g, '');
 
-            const mensaje = `¡Hola! Soy de ISA ChatCommerce.\n\n` +
-                `Analicé ${nombreNegocio} y tengo una propuesta para ti:\n\n` +
-                `📦 *Pack ${pack.nombre}*\n` +
-                `💰 Setup: ${pack.setup} MAD (único)\n` +
-                `📅 Mensual: ${pack.mensual} MAD/mes\n` +
-                `⏱️ Tiempo: ${pack.tiempo}\n\n` +
-                `¿Te gustaría agendar una reunión de 15 min para mostrarte cómo funciona?`;
+            const mensaje = '¡Hola! Soy de ISA ChatCommerce.\n\n' +
+                'Analicé ' + nombreNegocio + ' y tengo una propuesta para ti:\n\n' +
+                '📦 *Pack ' + pack.nombre + '*\n' +
+                '💰 Setup: ' + pack.setup + ' MAD (único)\n' +
+                '📅 Mensual: ' + pack.mensual + ' MAD/mes\n' +
+                '⏱️ Tiempo: ' + pack.tiempo + '\n\n' +
+                '¿Te gustaría agendar una reunión de 15 min para mostrarte cómo funciona?';
 
-            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            window.open('https://wa.me/' + telefono + '?text=' + encodeURIComponent(mensaje), '_blank');
         }
 
         async function guardarLead() {
@@ -450,8 +462,8 @@
                 nombre_dueno: document.getElementById('nombre-dueno').value,
                 telefono: document.getElementById('telefono').value,
                 tipo_negocio: document.getElementById('tipo-negocio').value,
-                cin: respuestas.cin || document.getElementById('cin').value || null,
-                rib: respuestas.rib || document.getElementById('rib').value || null,
+                cin: respuestas.cin,
+                rib: respuestas.rib,
                 segmento: respuestas.p1,
                 pack_asignado: PACKS[respuestas.p1].pack,
                 p2_whatsapp: respuestas.p2,
@@ -472,7 +484,6 @@
                     alert('⚠️ Error guardando. Copia los datos manualmente.');
                 }
             } catch (e) {
-                // Fallback: copiar al portapapeles
                 navigator.clipboard.writeText(JSON.stringify(datos, null, 2));
                 alert('📋 Datos copiados al portapapeles (modo offline)');
             }
