@@ -168,11 +168,24 @@
         <div class="progress-fill" id="progress" style="width: 0%"></div>
     </div>
 
-    <!-- P0: CIN + RIB (OPCIONAL) -->
+    <!-- P0: MODO PRIMERA VISITA -->
     <div class="step active" id="step-p0">
-        <h2><span class="step-number">P0</span>Requisitos legales <span style="color: var(--cyan); font-size: 0.75rem;">(opcional)</span></h2>
+        <h2><span class="step-number">P0</span>¿Qué sabés del negocio?</h2>
+
+        <div style="background: rgba(0,229,255,0.1); border: 1px solid var(--cyan); border-radius: 10px; padding: 14px; margin-bottom: 16px;">
+            <h3 style="color: var(--cyan); font-size: 0.95rem; margin-bottom: 8px;">📍 Modo Primera Visita</h3>
+            <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 12px;">
+                Usá esto cuando todavía no conocés al dueño. Anotá lo que veas y planificá el regreso.
+            </p>
+            <button class="btn" onclick="activarModoPrimeraVisita()" style="background: var(--cyan); color: var(--dark);">
+                📝 Activar modo "Primera Visita"
+            </button>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 16px 0;">
+
         <p style="color: #888; font-size: 0.8rem; margin-bottom: 12px;">
-            Si el cliente no quiere dar estos datos ahora, podés saltear este paso y pedirlos al firmar el contrato.
+            Si ya tenés al dueño y te dio sus datos, completá acá:
         </p>
         <div class="input-group">
             <label>CIN (Carte d'Identité Nationale) <span style="color: #666;">- opcional</span></label>
@@ -184,6 +197,33 @@
         </div>
         <button class="btn" onclick="validarP0()" style="margin-bottom: 8px;">✅ Validar y continuar</button>
         <button class="btn btn-secondary" onclick="saltearP0()">⏭️ Saltear (pedir después)</button>
+    </div>
+
+    <!-- PASO PRIMERA VISITA -->
+    <div class="step" id="step-primera-visita">
+        <h2><span class="step-number">📝</span>Primera Visita — Anotá lo que veas</h2>
+        <p style="color: #888; font-size: 0.8rem; margin-bottom: 12px;">
+            No tenés al dueño? Anotá todo lo que puedas para el regreso.
+        </p>
+        <div class="input-group">
+            <label>Nombre del negocio *</label>
+            <input type="text" id="pv-negocio" placeholder="Ej: Electro El Kaouar">
+        </div>
+        <div class="input-group">
+            <label>Dirección exacta</label>
+            <input type="text" id="pv-direccion" placeholder="Calle, número, zona, punto de referencia...">
+        </div>
+        <div class="input-group">
+            <label>Horario de atención (si lo ves)</label>
+            <input type="text" id="pv-horario" placeholder="Ej: 9:00 - 21:00, cerrado domingos">
+        </div>
+        <div class="input-group">
+            <label>Notas / Observaciones</label>
+            <input type="text" id="pv-notas" placeholder="Ej: Dueño no estaba, vuelve mañana, negocio grande, mucho tráfico...">
+        </div>
+        <button class="btn" onclick="guardarPrimeraVisita()">💾 Guardar visita</button>
+        <button class="btn btn-secondary" onclick="showStep('step-p0')" style="margin-top: 8px;">← Volver a P0</button>
+        <div id="pv-resumen"></div>
     </div>
 
     <!-- P1: Facturación -->
@@ -350,6 +390,61 @@
             if (respuestas.p3) completed++;
             if (respuestas.p4) completed++;
             document.getElementById('progress').style.width = (completed / 5 * 100) + '%';
+        }
+
+        function activarModoPrimeraVisita() {
+            showStep('step-primera-visita');
+        }
+
+        function guardarPrimeraVisita() {
+            const nombreNegocio = document.getElementById('pv-negocio').value.trim();
+            const direccion = document.getElementById('pv-direccion').value.trim();
+            const notas = document.getElementById('pv-notas').value.trim();
+            const horario = document.getElementById('pv-horario').value.trim();
+
+            if (!nombreNegocio) {
+                alert('Al menos anotá el nombre del negocio');
+                return;
+            }
+
+            const datos = {
+                nombre_negocio: nombreNegocio,
+                direccion: direccion,
+                notas: notas,
+                horario: horario,
+                tipo: 'primera_visita',
+                fecha: new Date().toISOString(),
+                siguiente_paso: 'volver_manana'
+            };
+
+            // Guardar en localStorage para no perderlo
+            let visitas = JSON.parse(localStorage.getItem('isa_visitas') || '[]');
+            visitas.push(datos);
+            localStorage.setItem('isa_visitas', JSON.stringify(visitas));
+
+            // Mostrar resumen
+            const resumen = document.getElementById('pv-resumen');
+            resumen.innerHTML = `
+                <div style="background: rgba(0,255,136,0.1); border: 1px solid var(--green); border-radius: 10px; padding: 16px; margin-top: 16px;">
+                    <h3 style="color: var(--green); margin-bottom: 12px;">✅ Visita guardada</h3>
+                    <p><strong>Negocio:</strong> ${nombreNegocio}</p>
+                    <p><strong>Dirección:</strong> ${direccion || 'No anotada'}</p>
+                    <p><strong>Notas:</strong> ${notas || 'Ninguna'}</p>
+                    <p><strong>Horario:</strong> ${horario || 'No anotado'}</p>
+                    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 12px 0;">
+                    <p style="color: var(--gold);">📋 Acción: Volver mañana, preguntar por el dueño</p>
+                    <p style="color: var(--gold);">💡 Llevar: Tarjeta de visita + sticker QR</p>
+                    <button class="btn" onclick="nuevaVisita()" style="margin-top: 12px;">➕ Nueva visita</button>
+                </div>
+            `;
+        }
+
+        function nuevaVisita() {
+            document.getElementById('pv-negocio').value = '';
+            document.getElementById('pv-direccion').value = '';
+            document.getElementById('pv-notas').value = '';
+            document.getElementById('pv-horario').value = '';
+            document.getElementById('pv-resumen').innerHTML = '';
         }
 
         function validarP0() {
