@@ -149,9 +149,13 @@ async def landing_stats(db: AsyncSession = Depends(get_db)):
     total = await db.execute(select(func.count()).select_from(LeadScrap))
     return {"total_leads": total.scalar(), "negocios_activos": 50, "satisfaccion": "4.9/5"}
 
-@app.get("/calculadora", response_class=HTMLResponse)
-async def calculadora_page(request: Request):
-    return templates.TemplateResponse("calculadora.html", {"request": request})
+@app.get("/calculadora")
+async def calculadora_page():
+    """Sirve calculadora.html desde templates o static"""
+    for path in ["templates/calculadora.html", "static/calculadora.html"]:
+        if os.path.exists(path):
+            return FileResponse(path)
+    raise HTTPException(status_code=404, detail="calculadora.html not found. Asegurate de subirlo a templates/ o static/")
 
 # Diagnóstico
 @app.get("/diagnostic")
