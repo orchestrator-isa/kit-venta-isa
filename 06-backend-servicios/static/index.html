@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orchestrator ISA — WhatsApp en máquina de clientes 24/7</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        isa: {
+          dark: '#0D1B2A',
+          navy: '#1A237E',
+          cyan: '#00E5FF',
+          green: '#25D366',
+          emerald: '#10B981',
+          gold: '#FFD700',
+          orange: '#F59E0B',
+          purple: '#8B5CF6',
+          rose: '#F43F5E',
+          slate: '#F8FAFC',
+          text: '#1E293B',
+          muted: '#64748B'
+        }
+      },
+      fontFamily: {
+        heading: ['Montserrat', 'sans-serif'],
+        body: ['Open Sans', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+<style>
+body { font-family: 'Open Sans', sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+.glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+.pack-card { transition: all 0.3s ease; }
+.pack-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+.whatsapp-btn { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); }
+.whatsapp-btn:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(37,211,102,0.3); }
+.float-cta { animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.typing::after { content: '|'; animation: blink 1s infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+</style>
+</head>
+<body class="bg-isa-slate text-isa-text antialiased">
+
+<!-- ============================================ -->
+<!-- FLOATING CTA (Mobile) -->
+<!-- ============================================ -->
+<div class="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur border-t border-gray-200 p-3">
+  <a href="https://wa.me/212786120081?text=Hola%2C%20quiero%20mi%20diagnóstico%20gratuito" 
+     class="whatsapp-btn block text-center text-white font-bold py-3 px-6 rounded-xl text-sm">
+    <i class="fab fa-whatsapp mr-2"></i> Diagnóstico GRATIS
+  </a>
+</div>
+
+<!-- ============================================ -->
+<!-- HERO -->
+<!-- ============================================ -->
+<section id="hero" class="relative min-h-screen bg-isa-navy overflow-hidden">
+  <!-- Background pattern -->
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-isa-cyan rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-isa-green rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative max-w-6xl mx-auto px-6 pt-20 pb-32 md:pt-32 md:pb-40">
+    <!-- Badge -->
+    <div class="inline-flex items-center gap-2 bg-isa-gold/20 border border-isa-gold/30 text-isa-gold px-4 py-2 rounded-full text-xs font-semibold mb-8 fade-in">
+      <span class="w-2 h-2 bg-isa-gold rounded-full animate-pulse"></span>
+      ⚡ Solo 10 cupos disponibles en Tetuán
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-6 fade-in" style="transition-delay: 0.1s">
+      Le configuro <span class="text-isa-green">TODO gratis</span>.<br>
+      Solo paga <span class="text-isa-cyan">si ve resultados</span>.
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="text-lg md:text-2xl text-gray-300 max-w-2xl mb-10 fade-in" style="transition-delay: 0.2s">
+      Google Maps + WhatsApp Business + Chatbot IA en 48h.<br class="hidden md:block">
+      Sin compromiso. Sin riesgo. Solo resultados.
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-12 fade-in" style="transition-delay: 0.3s">
+      <a href="https://wa.me/212786120081?text=Hola%2C%20activo%20mi%20oferta%20gancho" 
+         class="whatsapp-btn text-white font-bold py-4 px-8 rounded-xl text-lg inline-flex items-center justify-center gap-3">
+        <i class="fab fa-whatsapp text-2xl"></i>
+        🎁 Activar oferta GRATIS
+      </a>
+      <a href="#packs" 
+         class="glass text-white font-semibold py-4 px-8 rounded-xl text-lg inline-flex items-center justify-center gap-2 hover:bg-white/10 transition">
+        Ver packs desde 250 MAD
+        <i class="fas fa-arrow-down"></i>
+      </a>
+    </div>
+
+    <!-- Trust badges -->
+    <div class="flex flex-wrap items-center gap-6 text-gray-400 text-sm fade-in" style="transition-delay: 0.4s">
+      <span class="flex items-center gap-2"><i class="fas fa-handshake text-isa-green"></i> 50+ negocios digitalizados</span>
+      <span class="flex items-center gap-2"><i class="fas fa-star text-isa-gold"></i> 4.9/5 satisfacción</span>
+      <span class="flex items-center gap-2"><i class="fas fa-shield-alt text-isa-cyan"></i> Garantía 30 días</span>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 animate-bounce">
+    <i class="fas fa-chevron-down text-2xl"></i>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PROBLEMA -->
+<!-- ============================================ -->
+<section id="problema" class="py-20 md:py-28 bg-white">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="fade-in">
+      <span class="text-isa-rose font-semibold text-sm uppercase tracking-wider">El Problema</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-isa-text mt-3 mb-8">
+        Cada día pierdes clientes<br>sin darte cuenta
+      </h2>
+    </div>
+
+    <div class="space-y-6 text-lg text-gray-600 leading-relaxed fade-in">
+      <p>Imagina que tienes un restaurante en Tetuán. Todos los días, decenas de personas buscan en Google Maps <em>"dónde comer cerca"</em>. Y todos los días, el <strong class="text-isa-text">80% de ellas encuentra primero a tu competencia</strong>.</p>
+
+      <p>¿Por qué? Porque tu ficha de Google no está optimizada, tu WhatsApp es personal y no tienes sistema para responder rápido.</p>
+
+      <p class="text-isa-rose font-semibold">Cada día pierdes 10, 20, 30 clientes potenciales. Cada día dejas de facturar 500, 1.000, 2.000 dirhams.</p>
+
+      <p class="text-isa-text font-bold text-xl">Y lo peor: ni siquiera te has dado cuenta.</p>
+    </div>
+
+    <!-- Síntomas -->
+    <div class="mt-12 grid md:grid-cols-2 gap-4 fade-in">
+      <div class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-times-circle text-isa-rose mt-1"></i>
+        <span class="text-gray-700">No apareces en las primeras posiciones de Google Maps</span>
+      </div>
+      <div class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-times-circle text-isa-rose mt-1"></i>
+        <span class="text-gray-700">Tu WhatsApp es personal y no tiene catálogo</span>
+      </div>
+      <div class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-times-circle text-isa-rose mt-1"></i>
+        <span class="text-gray-700">Pierdes clientes porque no respondes rápido</span>
+      </div>
+      <div class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-times-circle text-isa-rose mt-1"></i>
+        <span class="text-gray-700">No tienes sistema para captar leads automáticamente</span>
+      </div>
+      <div class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-times-circle text-isa-rose mt-1"></i>
+        <span class="text-gray-700">Tus reseñas son pocas y no sabes cómo pedirlas</span>
+      </div>
+      <div class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-times-circle text-isa-rose mt-1"></i>
+        <span class="text-gray-700">Te saturas de mensajes y no das abasto</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SOLUCIÓN — 5 FASES -->
+<!-- ============================================ -->
+<section id="solucion" class="py-20 md:py-28 bg-isa-slate">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 fade-in">
+      <span class="text-isa-emerald font-semibold text-sm uppercase tracking-wider">La Solución</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-isa-text mt-3">
+        5 fases para convertir tu negocio<br>en una máquina de ventas
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-5 gap-6">
+      <!-- Fase 1 -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center fade-in pack-card">
+        <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-map-marker-alt text-2xl text-blue-600"></i>
+        </div>
+        <span class="text-xs font-bold text-blue-600 uppercase">Fase 1</span>
+        <h3 class="font-bold text-isa-text mt-1 mb-2">Atracción</h3>
+        <p class="text-sm text-gray-500">Te posiciono en Google Maps. Fotos profesionales. Reseñas de 5 estrellas.</p>
+      </div>
+
+      <!-- Fase 2 -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center fade-in pack-card" style="transition-delay: 0.1s">
+        <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fab fa-whatsapp text-2xl text-green-600"></i>
+        </div>
+        <span class="text-xs font-bold text-green-600 uppercase">Fase 2</span>
+        <h3 class="font-bold text-isa-text mt-1 mb-2">Contacto</h3>
+        <p class="text-sm text-gray-500">WhatsApp profesional con catálogo. Respuestas automáticas 24/7.</p>
+      </div>
+
+      <!-- Fase 3 -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center fade-in pack-card" style="transition-delay: 0.2s">
+        <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-globe text-2xl text-purple-600"></i>
+        </div>
+        <span class="text-xs font-bold text-purple-600 uppercase">Fase 3</span>
+        <h3 class="font-bold text-isa-text mt-1 mb-2">Conversión</h3>
+        <p class="text-sm text-gray-500">Página web que convierte visitas en leads. Formulario de captación.</p>
+      </div>
+
+      <!-- Fase 4 -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center fade-in pack-card" style="transition-delay: 0.3s">
+        <div class="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-robot text-2xl text-orange-600"></i>
+        </div>
+        <span class="text-xs font-bold text-orange-600 uppercase">Fase 4</span>
+        <h3 class="font-bold text-isa-text mt-1 mb-2">Automatización</h3>
+        <p class="text-sm text-gray-500">Chatbot IA que responde en segundos. Entiende darija. Reservas automáticas.</p>
+      </div>
+
+      <!-- Fase 5 -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center fade-in pack-card" style="transition-delay: 0.4s">
+        <div class="w-14 h-14 bg-cyan-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-chart-line text-2xl text-cyan-600"></i>
+        </div>
+        <span class="text-xs font-bold text-cyan-600 uppercase">Fase 5</span>
+        <h3 class="font-bold text-isa-text mt-1 mb-2">Escalado</h3>
+        <p class="text-sm text-gray-500">Reporte mensual con métricas. Optimización continua. Comunidad privada.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PRUEBA SOCIAL — DASHBOARD -->
+<!-- ============================================ -->
+<section id="resultados" class="py-20 md:py-28 bg-white">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12 fade-in">
+      <span class="text-isa-cyan font-semibold text-sm uppercase tracking-wider">Resultados Reales</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-isa-text mt-3 mb-4">
+        Esto no es una captura
+      </h2>
+      <p class="text-gray-500 text-lg">Es el dashboard real de un cliente. Actualizado cada hora.</p>
+    </div>
+
+    <!-- Dashboard mockup -->
+    <div class="bg-isa-dark rounded-2xl p-6 md:p-10 shadow-2xl fade-in">
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-isa-green rounded-lg flex items-center justify-center">
+            <i class="fas fa-robot text-white"></i>
+          </div>
+          <div>
+            <h3 class="text-white font-bold">Dashboard Orchestrator ISA</h3>
+            <p class="text-gray-400 text-sm">Café Al Hizam Al Akhdar — Tetuán</p>
+          </div>
+        </div>
+        <span class="text-emerald-400 text-sm flex items-center gap-2">
+          <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+          En vivo
+        </span>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+          <p class="text-gray-400 text-xs uppercase">Conversaciones hoy</p>
+          <p class="text-3xl font-bold text-white mt-1">47</p>
+          <p class="text-emerald-400 text-xs mt-1">↑ 23% vs ayer</p>
+        </div>
+        <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+          <p class="text-gray-400 text-xs uppercase">Pedidos generados</p>
+          <p class="text-3xl font-bold text-white mt-1">14</p>
+          <p class="text-emerald-400 text-xs mt-1">↑ 40% vs ayer</p>
+        </div>
+        <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+          <p class="text-gray-400 text-xs uppercase">ROI este mes</p>
+          <p class="text-3xl font-bold text-isa-gold mt-1">9,600%</p>
+          <p class="text-emerald-400 text-xs mt-1">Inversión: 250 MAD</p>
+        </div>
+        <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+          <p class="text-gray-400 text-xs uppercase">Calificación Google</p>
+          <p class="text-3xl font-bold text-isa-gold mt-1">4.8 ★</p>
+          <p class="text-emerald-400 text-xs mt-1">127 reseñas</p>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center">
+        <a href="https://wa.me/212786120081?text=Hola%2C%20quiero%20un%20dashboard%20así" 
+           class="inline-flex items-center gap-2 text-isa-cyan hover:text-white transition font-semibold">
+          <i class="fas fa-eye"></i>
+          Quiero un dashboard así para mi negocio
+        </a>
+      </div>
+    </div>
+
+    <!-- Métricas de mejora -->
+    <div class="mt-12 grid md:grid-cols-3 gap-6 fade-in">
+      <div class="text-center p-6">
+        <p class="text-gray-400 text-sm mb-2">Antes</p>
+        <p class="text-2xl font-bold text-isa-rose">0-1 cliente/día</p>
+        <div class="my-3"><i class="fas fa-arrow-down text-isa-rose"></i></div>
+        <p class="text-gray-400 text-sm mb-2">Después</p>
+        <p class="text-2xl font-bold text-isa-emerald">5-10 clientes/día</p>
+        <p class="text-isa-emerald font-bold mt-2">+400%</p>
+      </div>
+      <div class="text-center p-6">
+        <p class="text-gray-400 text-sm mb-2">Antes</p>
+        <p class="text-2xl font-bold text-isa-rose">5-10 mensajes perdidos</p>
+        <div class="my-3"><i class="fas fa-arrow-down text-isa-rose"></i></div>
+        <p class="text-gray-400 text-sm mb-2">Después</p>
+        <p class="text-2xl font-bold text-isa-emerald">0 mensajes perdidos</p>
+        <p class="text-isa-emerald font-bold mt-2">100% capturados</p>
+      </div>
+      <div class="text-center p-6">
+        <p class="text-gray-400 text-sm mb-2">Antes</p>
+        <p class="text-2xl font-bold text-isa-rose">2-3 reservas/semana</p>
+        <div class="my-3"><i class="fas fa-arrow-down text-isa-rose"></i></div>
+        <p class="text-gray-400 text-sm mb-2">Después</p>
+        <p class="text-2xl font-bold text-isa-emerald">10-15 reservas/semana</p>
+        <p class="text-isa-emerald font-bold mt-2">+400%</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- VENTANA 24H -->
+<!-- ============================================ -->
+<section id="ventana" class="py-20 md:py-28 bg-emerald-50">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <div class="fade-in">
+      <span class="text-isa-emerald font-semibold text-sm uppercase tracking-wider">Costes Transparentes</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-isa-text mt-3 mb-8">
+        La ventana de 24h de WhatsApp
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
+      <div class="bg-white rounded-2xl p-8 shadow-sm border-2 border-isa-green fade-in">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fab fa-whatsapp text-3xl text-isa-green"></i>
+        </div>
+        <h3 class="text-xl font-bold text-isa-text mb-2">GRATIS 24h</h3>
+        <p class="text-gray-600">Si el cliente escribe primero, el bot responde <strong class="text-isa-green">GRATIS</strong> durante 24 horas.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 fade-in" style="transition-delay: 0.1s">
+        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-clock text-3xl text-orange-500"></i>
+        </div>
+        <h3 class="text-xl font-bold text-isa-text mb-2">0.05€ después</h3>
+        <p class="text-gray-600">Pasadas las 24h, solo cuesta <strong>0.05€</strong> si TÚ inicias la conversación.</p>
+      </div>
+    </div>
+
+    <div class="bg-isa-navy rounded-2xl p-6 text-white fade-in">
+      <p class="text-lg"><i class="fas fa-lightbulb text-isa-gold mr-2"></i> <strong>Regla de oro:</strong> Pon el botón de WhatsApp en Google Maps y en tu web. El cliente escribe primero = <span class="text-isa-green font-bold">TODO GRATIS</span>.</p>
+      <p class="text-isa-cyan mt-2 text-sm">El 85% de los pedidos se completan en la primera hora.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PACKS -->
+<!-- ============================================ -->
+<section id="packs" class="py-20 md:py-28 bg-isa-slate">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12 fade-in">
+      <span class="text-isa-purple font-semibold text-sm uppercase tracking-wider">Nuestros Packs</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-isa-text mt-3 mb-4">
+        Elige el que mejor se adapte
+      </h2>
+      <p class="text-gray-500">Configuración incluida. Paga solo el mantenimiento mensual.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Presencia -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 pack-card fade-in">
+        <div class="text-center mb-6">
+          <span class="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">PRESENCIA</span>
+          <div class="mt-4">
+            <span class="text-4xl font-bold text-isa-text">250</span>
+            <span class="text-gray-500">MAD</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-1">+ 200 MAD/mes</p>
+        </div>
+        <ul class="space-y-3 text-sm text-gray-600 mb-6">
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Google Maps optimizado</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> WhatsApp básico</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> 1 red social</li>
+        </ul>
+        <a href="https://wa.me/212786120081?text=Hola%2C%20quiero%20el%20pack%20Presencia" 
+           class="block text-center py-3 border-2 border-gray-200 rounded-xl font-semibold text-gray-700 hover:border-isa-green hover:text-isa-green transition">
+          Elegir Presencia
+        </a>
+      </div>
+
+      <!-- WhatsApp Pro -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 pack-card fade-in" style="transition-delay: 0.1s">
+        <div class="text-center mb-6">
+          <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">WHATSAPP PRO</span>
+          <div class="mt-4">
+            <span class="text-4xl font-bold text-isa-text">400</span>
+            <span class="text-gray-500">MAD</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-1">+ 250 MAD/mes</p>
+        </div>
+        <ul class="space-y-3 text-sm text-gray-600 mb-6">
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Todo Presencia</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Catálogo de productos</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Respuestas automáticas</li>
+        </ul>
+        <a href="https://wa.me/212786120081?text=Hola%2C%20quiero%20el%20pack%20WhatsApp%20Pro" 
+           class="block text-center py-3 border-2 border-gray-200 rounded-xl font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-500 transition">
+          Elegir WhatsApp Pro
+        </a>
+      </div>
+
+      <!-- Automatización -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 pack-card fade-in" style="transition-delay: 0.2s">
+        <div class="text-center mb-6">
+          <span class="inline-block px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold">AUTOMATIZACIÓN</span>
+          <div class="mt-4">
+            <span class="text-4xl font-bold text-isa-text">700</span>
+            <span class="text-gray-500">MAD</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-1">+ 400 MAD/mes</p>
+        </div>
+        <ul class="space-y-3 text-sm text-gray-600 mb-6">
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Todo WhatsApp Pro</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Chatbot IA</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Flujos conversacionales</li>
+        </ul>
+        <a href="https://wa.me/212786120081?text=Hola%2C%20quiero%20el%20pack%20Automatización" 
+           class="block text-center py-3 border-2 border-gray-200 rounded-xl font-semibold text-gray-700 hover:border-orange-500 hover:text-orange-500 transition">
+          Elegir Automatización
+        </a>
+      </div>
+
+      <!-- Semi-Digital Pro (Más vendido) -->
+      <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-isa-purple pack-card relative fade-in" style="transition-delay: 0.3s">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+          <span class="bg-isa-purple text-white px-4 py-1 rounded-full text-xs font-bold">⭐ MÁS VENDIDO</span>
+        </div>
+        <div class="text-center mb-6 pt-2">
+          <span class="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">SEMI-DIGITAL PRO</span>
+          <div class="mt-4">
+            <span class="text-4xl font-bold text-isa-text">950</span>
+            <span class="text-gray-500">MAD</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-1">+ 500 MAD/mes</p>
+        </div>
+        <ul class="space-y-3 text-sm text-gray-600 mb-6">
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Todo Automatización</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Paleta de colores</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Setup express</li>
+        </ul>
+        <a href="https://wa.me/212786120081?text=Hola%2C%20quiero%20el%20pack%20Semi-Digital%20Pro" 
+           class="block text-center py-3 bg-isa-purple text-white rounded-xl font-semibold hover:bg-purple-700 transition">
+          Elegir Semi-Digital Pro
+        </a>
+      </div>
+    </div>
+
+    <!-- Packs grandes -->
+    <div class="grid md:grid-cols-3 gap-6 mt-6">
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 pack-card fade-in">
+        <div class="text-center mb-4">
+          <span class="inline-block px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">COMPLETO</span>
+          <div class="mt-2"><span class="text-3xl font-bold">1.200</span> <span class="text-gray-500">MAD</span></div>
+          <p class="text-gray-400 text-xs">+ 600 MAD/mes</p>
+        </div>
+        <p class="text-sm text-gray-600 text-center">Todo Semi-Digital + Landing Page + Contenido + SEO</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-isa-gold pack-card relative fade-in" style="transition-delay: 0.1s">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+          <span class="bg-isa-gold text-isa-dark px-4 py-1 rounded-full text-xs font-bold">🚀 RECOMENDADO</span>
+        </div>
+        <div class="text-center mb-4 pt-2">
+          <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">GROWTH</span>
+          <div class="mt-2"><span class="text-3xl font-bold">1.500</span> <span class="text-gray-500">MAD</span></div>
+          <p class="text-gray-400 text-xs">+ 600 MAD/mes</p>
+        </div>
+        <p class="text-sm text-gray-600 text-center">Todo Completo + Google Ads + SEO Avanzado + Dashboard ROI + Formación 2h</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 pack-card fade-in" style="transition-delay: 0.2s">
+        <div class="text-center mb-4">
+          <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">ENTERPRISE</span>
+          <div class="mt-2"><span class="text-3xl font-bold">2.500</span> <span class="text-gray-500">MAD</span></div>
+          <p class="text-gray-400 text-xs">+ 1.000 MAD/mes</p>
+        </div>
+        <p class="text-sm text-gray-600 text-center">Todo Growth + SEO Multilingüe + 8 posts/mes + 4 reels + Formación 4h + Soporte 24/7</p>
+      </div>
+    </div>
+
+    <!-- Oferta gancho -->
+    <div class="mt-12 bg-isa-navy rounded-2xl p-8 text-center fade-in">
+      <p class="text-2xl text-white font-bold mb-2">🎁 Configuración GRATIS</p>
+      <p class="text-gray-300 mb-4">Solo pagas 200 MAD/mes si ves resultados en 30 días.</p>
+      <p class="text-isa-gold text-sm font-semibold">⚡ Solo los primeros 10 clientes</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- MODELO HÍBRIDO -->
+<!-- ============================================ -->
+<section id="suscripcion" class="py-20 md:py-28 bg-white">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-12 fade-in">
+      <span class="text-isa-emerald font-semibold text-sm uppercase tracking-wider">Flexibilidad Total</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-isa-text mt-3 mb-4">
+        Elige cómo quieres pagar
+      </h2>
+      <p class="text-gray-500">Sin compromisos. Sin letra pequeña.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Básica -->
+      <div class="bg-isa-slate rounded-2xl p-8 fade-in">
+        <div class="text-center mb-6">
+          <h3 class="text-xl font-bold text-isa-text">Básica</h3>
+          <div class="mt-3"><span class="text-4xl font-bold">200</span> <span class="text-gray-500">MAD/mes</span></div>
+          <span class="inline-block mt-2 px-3 py-1 bg-gray-200 text-gray-600 rounded-full text-xs">Cuota fija</span>
+        </div>
+        <ul class="space-y-3 text-sm text-gray-600">
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Soporte técnico básico</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Hosting incluido</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Actualizaciones</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> 1 reporte mensual</li>
+        </ul>
+      </div>
+
+      <!-- Proactiva -->
+      <div class="bg-isa-slate rounded-2xl p-8 fade-in" style="transition-delay: 0.1s">
+        <div class="text-center mb-6">
+          <h3 class="text-xl font-bold text-isa-text">Proactiva</h3>
+          <div class="mt-3"><span class="text-4xl font-bold">600</span> <span class="text-gray-500">MAD/mes</span></div>
+          <span class="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">Cuota fija</span>
+        </div>
+        <ul class="space-y-3 text-sm text-gray-600">
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Todo Básica</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Contenido mensual</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Optimización chatbot</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Reporte con ROI</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Soporte prioritario</li>
+        </ul>
+      </div>
+
+      <!-- Comisión (Recomendada) -->
+      <div class="bg-emerald-50 rounded-2xl p-8 border-2 border-isa-green fade-in relative" style="transition-delay: 0.2s">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+          <span class="bg-isa-green text-white px-4 py-1 rounded-full text-xs font-bold">💡 RECOMENDADA</span>
+        </div>
+        <div class="text-center mb-6 pt-2">
+          <h3 class="text-xl font-bold text-isa-text">Comisión</h3>
+          <div class="mt-3"><span class="text-4xl font-bold text-isa-green">5%</span></div>
+          <p class="text-gray-500 text-sm mt-1">Tope máximo: 800 MAD/mes</p>
+          <span class="inline-block mt-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">Sin cuota fija</span>
+        </div>
+        <ul class="space-y-3 text-sm text-gray-600">
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Sin cuota fija</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Pagas solo si vendes</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-0.5"></i> Tope de 800 MAD/mes</li>
+        </ul>
+        <div class="mt-6 p-4 bg-white rounded-xl text-sm">
+          <p class="text-gray-600"><strong>Ejemplo:</strong> Si el bot genera <strong>20.000 MAD</strong> en ventas, pagas <strong>800 MAD</strong> y te quedas con <strong>19.200 MAD</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- REFERIDOS -->
+<!-- ============================================ -->
+<section id="referidos" class="py-20 md:py-28 bg-isa-slate">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-12 fade-in">
+      <span class="text-isa-gold font-semibold text-sm uppercase tracking-wider">Crecemos Juntos</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-isa-text mt-3 mb-4">
+        Programa "Traes 1, Ganas 1"
+      </h2>
+      <p class="text-gray-500">Tu mejor marketing es un cliente feliz.</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white rounded-2xl p-6 text-center shadow-sm fade-in">
+        <div class="text-4xl mb-3">🥉</div>
+        <h3 class="font-bold text-isa-text">Bronce</h3>
+        <p class="text-2xl font-bold text-isa-text mt-2">1</p>
+        <p class="text-sm text-gray-500">referido</p>
+        <div class="mt-4 pt-4 border-t">
+          <p class="text-isa-emerald font-bold">1 mes GRATIS</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 text-center shadow-sm fade-in" style="transition-delay: 0.1s">
+        <div class="text-4xl mb-3">🥈</div>
+        <h3 class="font-bold text-isa-text">Plata</h3>
+        <p class="text-2xl font-bold text-isa-text mt-2">3</p>
+        <p class="text-sm text-gray-500">referidos</p>
+        <div class="mt-4 pt-4 border-t">
+          <p class="text-isa-emerald font-bold">Setup GRATIS</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 text-center shadow-sm fade-in" style="transition-delay: 0.2s">
+        <div class="text-4xl mb-3">🥇</div>
+        <h3 class="font-bold text-isa-text">Oro</h3>
+        <p class="text-2xl font-bold text-isa-text mt-2">5</p>
+        <p class="text-sm text-gray-500">referidos</p>
+        <div class="mt-4 pt-4 border-t">
+          <p class="text-isa-emerald font-bold">3 meses GRATIS</p>
+        </div>
+      </div>
+
+      <div class="bg-isa-navy rounded-2xl p-6 text-center shadow-sm fade-in" style="transition-delay: 0.3s">
+        <div class="text-4xl mb-3">💎</div>
+        <h3 class="font-bold text-white">Diamante</h3>
+        <p class="text-2xl font-bold text-isa-gold mt-2">10</p>
+        <p class="text-sm text-gray-400">referidos</p>
+        <div class="mt-4 pt-4 border-t border-white/20">
+          <p class="text-isa-gold font-bold">1 año GRATIS</p>
+          <p class="text-gray-400 text-xs mt-1">+ Caso de éxito</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-8">
+      <a href="https://wa.me/212786120081?text=Hola%2C%20quiero%20activar%20mi%20código%20de%20referido" 
+         class="inline-flex items-center gap-2 text-isa-purple font-semibold hover:text-purple-700 transition">
+        <i class="fas fa-gift"></i>
+        Activar mi código de referido
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- FAQ -->
+<!-- ============================================ -->
+<section id="faq" class="py-20 md:py-28 bg-white">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="text-center mb-12 fade-in">
+      <span class="text-isa-muted font-semibold text-sm uppercase tracking-wider">FAQ</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-isa-text mt-3">
+        Preguntas frecuentes
+      </h2>
+    </div>
+
+    <div class="space-y-4" id="faq-container">
+      <!-- FAQ items -->
+      <div class="border border-gray-200 rounded-xl overflow-hidden fade-in">
+        <button class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+          <span class="font-semibold text-isa-text">¿Y si no tengo fotos de mi negocio?</span>
+          <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+        </button>
+        <div class="hidden px-5 pb-5 text-gray-600">
+          <p>No te preocupes. Te ayudamos a tomar fotos profesionales con tu móvil o te conectamos con un fotógrafo local en Tetuán. Lo importante es empezar.</p>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-xl overflow-hidden fade-in" style="transition-delay: 0.05s">
+        <button class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+          <span class="font-semibold text-isa-text">¿Y si no funciona?</span>
+          <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+        </button>
+        <div class="hidden px-5 pb-5 text-gray-600">
+          <p>Tienes <strong>30 días de garantía</strong>. Si no ves resultados, te devolvemos el 100%. Sin preguntas. Sin letra pequeña.</p>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-xl overflow-hidden fade-in" style="transition-delay: 0.1s">
+        <button class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+          <span class="font-semibold text-isa-text">¿Cuánto tiempo tarda?</span>
+          <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+        </button>
+        <div class="hidden px-5 pb-5 text-gray-600">
+          <p><strong>48h</strong> para packs básicos. <strong>5-7 días</strong> para el Completo. Growth y Enterprise requieren <strong>1-2 semanas</strong> por la configuración de Google Ads y SEO.</p>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-xl overflow-hidden fade-in" style="transition-delay: 0.15s">
+        <button class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+          <span class="font-semibold text-isa-text">¿Qué pasa si ya tengo Instagram o web?</span>
+          <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+        </button>
+        <div class="hidden px-5 pb-5 text-gray-600">
+          <p>Perfecto. Las integramos en el sistema. No tienes que empezar de cero. Optimizamos lo que ya tienes y conectamos todo con WhatsApp.</p>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-xl overflow-hidden fade-in" style="transition-delay: 0.2s">
+        <button class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+          <span class="font-semibold text-isa-text">¿Y el mantenimiento? ¿Qué incluye?</span>
+          <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+        </button>
+        <div class="hidden px-5 pb-5 text-gray-600">
+          <p>Hosting, actualizaciones, soporte técnico, optimización del chatbot según conversaciones reales, y 1 reporte mensual con métricas.</p>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-xl overflow-hidden fade-in" style="transition-delay: 0.25s">
+        <button class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+          <span class="font-semibold text-isa-text">¿Puedo pagar en plazos?</span>
+          <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+        </button>
+        <div class="hidden px-5 pb-5 text-gray-600">
+          <p>Sí. Podemos dividir el pago inicial en <strong>2 o 3 plazos</strong> sin intereses. La suscripción mensual empieza cuando el sistema está activo.</p>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-xl overflow-hidden fade-in" style="transition-delay: 0.3s">
+        <button class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+          <span class="font-semibold text-isa-text">¿Para qué tipo de negocios es esto?</span>
+          <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+        </button>
+        <div class="hidden px-5 pb-5 text-gray-600">
+          <p>Restaurantes, cafeterías, clínicas, peluquerías, talleres, tiendas, gimnasios... Cualquier negocio local en Tetuán que quiera más clientes sin trabajar más horas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- CTA FINAL -->
+<!-- ============================================ -->
+<section id="cta" class="py-20 md:py-28 bg-isa-navy relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-isa-green rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-1/4 w-72 h-72 bg-isa-cyan rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative max-w-3xl mx-auto px-6 text-center">
+    <div class="fade-in">
+      <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">
+        ¿Listo para tener más clientes?
+      </h2>
+      <p class="text-xl text-gray-300 mb-10">
+        Haz clic en el botón y escríbeme por WhatsApp.<br>
+        Te haré un <strong class="text-isa-cyan">diagnóstico gratuito</strong> en menos de 1 hora.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+        <a href="https://wa.me/212786120081?text=Hola%2C%20quiero%20mi%20diagnóstico%20gratuito" 
+           class="whatsapp-btn text-white font-bold py-5 px-10 rounded-xl text-xl inline-flex items-center justify-center gap-3 float-cta">
+          <i class="fab fa-whatsapp text-2xl"></i>
+          📱 Quiero mi diagnóstico gratuito
+        </a>
+      </div>
+
+      <a href="#" onclick="showFormModal(); return false;" 
+         class="inline-flex items-center gap-2 text-gray-400 hover:text-white transition">
+        <i class="fas fa-file-alt"></i>
+        Solicitar presupuesto sin compromiso
+      </a>
+
+      <p class="text-gray-500 text-sm mt-6">* Sin compromiso. Respuesta en &lt; 1 hora.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- FOOTER -->
+<!-- ============================================ -->
+<footer class="bg-isa-dark py-12 border-t border-white/10">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-isa-green rounded-lg flex items-center justify-center font-bold text-white text-sm">ISA</div>
+          <span class="text-white font-bold">Orchestrator ISA</span>
+        </div>
+        <p class="text-gray-400 text-sm">Convierte tu WhatsApp en una máquina de clientes 24/7.</p>
+      </div>
+
+      <div>
+        <h4 class="text-white font-semibold mb-4">Contacto</h4>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="https://wa.me/212786120081" class="hover:text-isa-green transition"><i class="fab fa-whatsapp mr-2"></i>+212 786 120 081</a></li>
+          <li><a href="mailto:orchestrator.isa@gmail.com" class="hover:text-white transition"><i class="fas fa-envelope mr-2"></i>orchestrator.isa@gmail.com</a></li>
+          <li><a href="https://github.com/AssistantIsa" class="hover:text-white transition"><i class="fab fa-github mr-2"></i>github.com/AssistantIsa</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-semibold mb-4">Legal</h4>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="#" class="hover:text-white transition">Política de Privacidad</a></li>
+          <li><a href="#" class="hover:text-white transition">Términos y Condiciones</a></li>
+          <li><a href="#" class="hover:text-white transition">Garantía de 30 días</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-semibold mb-4">Síguenos</h4>
+        <div class="flex gap-4">
+          <a href="#" class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-gray-400 hover:bg-isa-green hover:text-white transition"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-gray-400 hover:bg-blue-500 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-gray-400 hover:bg-pink-500 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-white/10 pt-8 text-center text-gray-500 text-sm">
+      <p>© 2026 Orchestrator ISA. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================ -->
+<!-- FORM MODAL -->
+<!-- ============================================ -->
+<div id="formModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full p-8 relative">
+    <button onclick="closeFormModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+    <h3 class="text-2xl font-bold text-isa-text mb-2">Solicitar presupuesto</h3>
+    <p class="text-gray-500 text-sm mb-6">Te respondemos en menos de 1 hora.</p>
+
+    <form onsubmit="submitForm(event)" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del negocio</label>
+        <input type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-isa-green focus:border-transparent outline-none" placeholder="Ej: Café Al Hizam">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Tu nombre</label>
+        <input type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-isa-green focus:border-transparent outline-none" placeholder="Ej: Mohamed">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+        <input type="tel" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-isa-green focus:border-transparent outline-none" placeholder="Ej: +212 600 000 000">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de negocio</label>
+        <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-isa-green focus:border-transparent outline-none">
+          <option>Restaurante / Cafetería</option>
+          <option>Clínica / Estética</option>
+          <option>Peluquería / Barbería</option>
+          <option>Tienda / Boutique</option>
+          <option>Taller / Servicio</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <button type="submit" class="w-full whatsapp-btn text-white font-bold py-4 rounded-xl">
+        <i class="fab fa-whatsapp mr-2"></i> Enviar por WhatsApp
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- SCRIPTS -->
+<!-- ============================================ -->
+<script>
+// Fade in on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// FAQ toggle
+function toggleFaq(btn) {
+  const content = btn.nextElementSibling;
+  const icon = btn.querySelector('.fa-chevron-down');
+  content.classList.toggle('hidden');
+  icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+// Form modal
+function showFormModal() {
+  document.getElementById('formModal').classList.remove('hidden');
+  document.getElementById('formModal').classList.add('flex');
+}
+
+function closeFormModal() {
+  document.getElementById('formModal').classList.add('hidden');
+  document.getElementById('formModal').classList.remove('flex');
+}
+
+function submitForm(e) {
+  e.preventDefault();
+  const inputs = e.target.querySelectorAll('input, select');
+  const data = {
+    negocio: inputs[0].value,
+    nombre: inputs[1].value,
+    telefono: inputs[2].value,
+    tipo: inputs[3].value
+  };
+  const msg = `Hola, soy ${data.nombre} de ${data.negocio} (${data.tipo}). Mi WhatsApp: ${data.telefono}. Quiero un presupuesto.`;
+  window.open(`https://wa.me/212786120081?text=${encodeURIComponent(msg)}`, '_blank');
+  closeFormModal();
+}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
+</html>
