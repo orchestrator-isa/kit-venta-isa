@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: isa-chatcommerce
+    name: kit-venta-isa
     runtime: python
     region: frankfurt
     plan: free
