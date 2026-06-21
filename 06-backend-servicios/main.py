@@ -114,6 +114,7 @@ async def create_landing_lead(
     # Crear lead
     lead = LeadScrap(
         nombre_negocio=negocio or "Sin nombre",
+        nombre_contacto=nombre or None,  # ← NUEVO
         telefono=telefono,
         ciudad=ciudad,
         caso=caso,
@@ -121,6 +122,7 @@ async def create_landing_lead(
         estado="nuevo",
         fuente=fuente,
         mensaje_personalizado=mensaje,
+        score_segmentacion=score_segmentacion,  # ← NUEVO
         notas=(
             f"Tipo: {tipo_negocio or 'No especificado'}. "
             f"Landing: {fuente}. "

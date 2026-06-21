@@ -9,6 +9,7 @@ class LeadScrap(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nombre_negocio = Column(String(255), nullable=False)
+    nombre_contacto = Column(String(255), nullable=True)
     telefono = Column(String(50), nullable=False, index=True)
     direccion = Column(Text, nullable=True)
     ciudad = Column(String(100), nullable=True)
@@ -22,6 +23,7 @@ class LeadScrap(Base):
     fecha_scrap = Column(DateTime(timezone=True), server_default=func.now())
     fecha_contacto = Column(DateTime(timezone=True), nullable=True)
     notas = Column(Text, nullable=True)
+    score_segmentacion = Column(Integer, default=0)
     extra_data = Column(JSON, nullable=True)
 
 class Reservacion(Base):
