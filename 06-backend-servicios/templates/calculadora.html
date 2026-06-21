@@ -20,9 +20,7 @@
             --glow-cyan: 0 0 20px rgba(0,229,255,0.3);
             --glow-green: 0 0 20px rgba(0,255,136,0.3);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background: var(--darker);
@@ -30,8 +28,6 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-
-        /* Stars background */
         .stars {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -49,8 +45,6 @@
             0%, 100% { opacity: 0.2; }
             50% { opacity: 1; }
         }
-
-        /* Header */
         .header {
             text-align: center;
             padding: 30px 20px 10px;
@@ -80,8 +74,6 @@
             font-size: 0.85rem;
             margin-top: 5px;
         }
-
-        /* Progress bar */
         .progress-container {
             max-width: 600px;
             margin: 0 auto 20px;
@@ -130,8 +122,6 @@
             border-color: var(--green);
             color: var(--dark);
         }
-
-        /* Main container */
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -139,8 +129,6 @@
             position: relative;
             z-index: 1;
         }
-
-        /* Card */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -153,8 +141,6 @@
             border-color: var(--cyan);
             box-shadow: 0 0 30px rgba(0,229,255,0.1);
         }
-
-        /* Step title */
         .step-number {
             display: inline-block;
             background: var(--gradient);
@@ -178,8 +164,6 @@
             margin-bottom: 20px;
             line-height: 1.5;
         }
-
-        /* Options */
         .options {
             display: flex;
             flex-direction: column;
@@ -231,14 +215,14 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            font-size: 0.8rem;
+            color: transparent;
         }
         .option.selected .option-check {
             background: var(--green);
             border-color: var(--green);
             color: var(--dark);
         }
-
-        /* Input fields */
         .input-group {
             margin-bottom: 16px;
         }
@@ -247,6 +231,9 @@
             color: var(--text-dim);
             font-size: 0.85rem;
             margin-bottom: 6px;
+        }
+        .input-group label .required {
+            color: #ff4444;
         }
         .input-group input,
         .input-group select {
@@ -269,8 +256,19 @@
         .input-group input::placeholder {
             color: #445566;
         }
-
-        /* Buttons */
+        .input-group input.error {
+            border-color: #ff4444;
+            box-shadow: 0 0 10px rgba(255,68,68,0.3);
+        }
+        .error-msg {
+            color: #ff4444;
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: none;
+        }
+        .error-msg.visible {
+            display: block;
+        }
         .btn {
             width: 100%;
             padding: 14px 24px;
@@ -310,8 +308,6 @@
         .btn-group .btn {
             flex: 1;
         }
-
-        /* Result card */
         .result-pack {
             text-align: center;
             padding: 30px 20px;
@@ -346,8 +342,6 @@
             line-height: 1.6;
             margin-bottom: 20px;
         }
-
-        /* Flow diagram */
         .flow-diagram {
             background: var(--darker);
             border-radius: 12px;
@@ -387,8 +381,6 @@
             font-size: 1.2rem;
             margin: 4px 0;
         }
-
-        /* Features list */
         .features {
             list-style: none;
             margin: 15px 0;
@@ -406,8 +398,6 @@
             color: var(--green);
             font-weight: bold;
         }
-
-        /* Score badge */
         .score-badge {
             display: inline-flex;
             align-items: center;
@@ -423,8 +413,6 @@
             font-size: 1.2rem;
             color: var(--green);
         }
-
-        /* Share buttons */
         .share-btns {
             display: flex;
             gap: 10px;
@@ -442,11 +430,7 @@
             color: var(--green);
             border: 2px solid var(--green);
         }
-
-        /* Hidden */
         .hidden { display: none !important; }
-
-        /* Animations */
         .fade-in {
             animation: fadeIn 0.5s ease;
         }
@@ -454,8 +438,6 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Responsive */
         @media (max-width: 480px) {
             .header h1 { font-size: 1.1rem; }
             .card { padding: 18px; }
@@ -467,13 +449,11 @@
 </head>
 <body>
     <div class="stars" id="stars"></div>
-
     <div class="header">
         <div class="rocket">🚀</div>
         <h1>CALCULADORA DE SEGMENTACIÓN P0</h1>
         <p>Diagnostica cualquier negocio en 2 minutos</p>
     </div>
-
     <div class="progress-container">
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
@@ -488,9 +468,7 @@
             <div class="step-dot" id="dot6">✓</div>
         </div>
     </div>
-
     <div class="container">
-
         <!-- PASO 0: MODO -->
         <div class="card fade-in" id="step0">
             <span class="step-number">PASO 0</span>
@@ -523,7 +501,6 @@
                 </div>
             </div>
         </div>
-
         <!-- PASO 1: WHATSAPP -->
         <div class="card hidden" id="step1">
             <span class="step-number">PASO 1</span>
@@ -564,7 +541,6 @@
                 </div>
             </div>
         </div>
-
         <!-- PASO 2: GOOGLE MAPS -->
         <div class="card hidden" id="step2">
             <span class="step-number">PASO 2</span>
@@ -597,7 +573,6 @@
                 </div>
             </div>
         </div>
-
         <!-- PASO 3: FACTURACIÓN -->
         <div class="card hidden" id="step3">
             <span class="step-number">PASO 3</span>
@@ -638,7 +613,6 @@
                 </div>
             </div>
         </div>
-
         <!-- PASO 4: CLIENTES/DÍA -->
         <div class="card hidden" id="step4">
             <span class="step-number">PASO 4</span>
@@ -679,7 +653,6 @@
                 </div>
             </div>
         </div>
-
         <!-- PASO 5: REDES SOCIALES -->
         <div class="card hidden" id="step5">
             <span class="step-number">PASO 5</span>
@@ -720,24 +693,25 @@
                 </div>
             </div>
         </div>
-
         <!-- PASO 6: DATOS DEL PROSPECTO -->
         <div class="card hidden" id="step6">
             <span class="step-number">DATOS DEL PROSPECTO</span>
             <h2 class="step-title">Información de contacto</h2>
-            <p class="step-desc">Guarda estos datos para seguimiento y generar la propuesta.</p>
-
+            <p class="step-desc">Completa los datos obligatorios (*) para generar la propuesta.</p>
             <div class="input-group">
-                <label>Nombre del dueño / contacto</label>
+                <label>Nombre del dueño / contacto <span class="required">*</span></label>
                 <input type="text" id="nombreProspecto" placeholder="Ej: Ahmed Benali">
+                <div class="error-msg" id="error-nombre">El nombre es obligatorio</div>
             </div>
             <div class="input-group">
-                <label>Teléfono WhatsApp</label>
+                <label>Teléfono WhatsApp <span class="required">*</span></label>
                 <input type="tel" id="telefonoProspecto" placeholder="Ej: +212 6XX-XXXXXX">
+                <div class="error-msg" id="error-telefono">El teléfono es obligatorio (mínimo 8 dígitos)</div>
             </div>
             <div class="input-group">
-                <label>Nombre del negocio</label>
+                <label>Nombre del negocio <span class="required">*</span></label>
                 <input type="text" id="negocioProspecto" placeholder="Ej: Café Al Hizam Al Akhdar">
+                <div class="error-msg" id="error-negocio">El nombre del negocio es obligatorio</div>
             </div>
             <div class="input-group">
                 <label>Tipo de negocio</label>
@@ -754,66 +728,15 @@
             </div>
             <div class="input-group">
                 <label>Ciudad / Zona</label>
-                <input type="text" id="ciudadProspecto" placeholder="Ej: Tetuán, Martil, Chaouen">
+                <input type="text" id="ciudadProspecto" placeholder="Ej: Tetuán, Martil, Chaouen" value="Tetuán">
             </div>
-
             <button class="btn btn-primary" onclick="generarPropuesta()">
                 🚀 GENERAR PROPUESTA PERSONALIZADA
             </button>
         </div>
-
-        <!-- RESULTADO: PROPUESTA -->
-        <div class="card hidden" id="resultado">
-            <div class="result-pack">
-                <div class="pack-icon" id="packIcon">📦</div>
-                <div class="pack-name" id="packName">PACK RECOMENDADO</div>
-                <div class="score-badge">
-                    Score de segmentación: <span class="score-value" id="scoreValue">0</span>/20
-                </div>
-                <div class="pack-price" id="packPrice">0 MAD</div>
-                <div class="pack-monthly" id="packMonthly">+ 0 MAD/mes mantenimiento</div>
-                <div class="pack-desc" id="packDesc">Descripción del pack...</div>
-            </div>
-
-            <h3 style="font-size:0.95rem; color:var(--cyan); margin-bottom:12px; font-family:'Orbitron',sans-serif;">
-                ✅ INCLUYE:
-            </h3>
-            <ul class="features" id="packFeatures">
-                <!-- Se llena dinámicamente -->
-            </ul>
-
-            <div class="flow-diagram">
-                <div class="flow-title">📐 FLUJO DE IMPLEMENTACIÓN</div>
-                <div id="flowContainer">
-                    <!-- Se llena dinámicamente -->
-                </div>
-            </div>
-
-            <div class="flow-diagram">
-                <div class="flow-title">🚀 GROWTH TIPS</div>
-                <div id="growthContainer">
-                    <!-- Se llena dinámicamente -->
-                </div>
-            </div>
-
-            <div class="share-btns">
-                <button class="btn btn-whatsapp" onclick="compartirWhatsApp()">
-                    📱 Compartir por WhatsApp
-                </button>
-                <button class="btn btn-save" onclick="guardarLead()">
-                    💾 Guardar Lead
-                </button>
-            </div>
-
-            <div style="margin-top:15px;">
-                <button class="btn btn-secondary" onclick="reiniciar()">
-                    🔄 Nueva Calculadora
-                </button>
-            </div>
-        </div>
-
+        <!-- RESULTADO: Se llena dinámicamente -->
+        <div class="card hidden" id="resultado"></div>
     </div>
-
     <script>
         // Generar estrellas
         const starsContainer = document.getElementById('stars');
@@ -826,13 +749,9 @@
             star.style.opacity = Math.random() * 0.8 + 0.2;
             starsContainer.appendChild(star);
         }
-
-        // Estado
         let currentStep = 0;
         const answers = {};
-        const totalSteps = 7; // 0-5 preguntas + datos + resultado
-
-        // Puntuaciones
+        const totalSteps = 7;
         const scores = {
             whatsapp: { no_whatsapp: 0, whatsapp_personal: 1, whatsapp_business_sin: 2, whatsapp_business_con: 3 },
             maps: { no_maps: 0, maps_sin_reviews: 1, maps_con_reviews: 2 },
@@ -840,14 +759,9 @@
             clientes: { clientes_10: 0, clientes_10_30: 1, clientes_30_50: 2, clientes_50: 3 },
             redes: { redes_ninguna: 0, redes_facebook: 1, redes_instagram: 2, redes_varias: 3 }
         };
-
-        // Packs
         const packs = {
             presencia: {
-                name: 'PACK PRESENCIA',
-                icon: '📍',
-                setup: 250,
-                monthly: 200,
+                name: 'PACK PRESENCIA', icon: '📍', setup: 250, monthly: 200,
                 desc: 'Para negocios que quieren aparecer en Google Maps y tener WhatsApp Business básico.',
                 features: [
                     '✅ Google Maps optimizado (fotos, horarios, descripción)',
@@ -869,10 +783,7 @@
                 ]
             },
             whatsapp_pro: {
-                name: 'PACK WHATSAPP PRO',
-                icon: '💬',
-                setup: 400,
-                monthly: 250,
+                name: 'PACK WHATSAPP PRO', icon: '💬', setup: 400, monthly: 250,
                 desc: 'Para negocios que ya tienen presencia pero necesitan catálogo y respuestas automáticas.',
                 features: [
                     '✅ Todo lo del Pack Presencia',
@@ -890,14 +801,11 @@
                 growth: [
                     '💡 Actualizar precios cada semana',
                     '💡 Añadir 5 productos nuevos al mes',
-                    '💡 Usar respuestas rápidas para preguntas frecuentes'
+                    '💡 Usar respuestas rápidas para FAQs'
                 ]
             },
             automatizacion: {
-                name: 'PACK AUTOMATIZACIÓN',
-                icon: '🤖',
-                setup: 700,
-                monthly: 400,
+                name: 'PACK AUTOMATIZACIÓN', icon: '🤖', setup: 700, monthly: 400,
                 desc: 'Chatbot con IA, flujos conversacionales y dashboard básico.',
                 features: [
                     '✅ Todo lo del Pack WhatsApp Pro',
@@ -915,14 +823,11 @@
                 growth: [
                     '💡 Revisar conversaciones "perdidas" semanalmente',
                     '💡 Añadir nuevas intenciones cada mes',
-                    '💡 Usar el dashboard para identificar horas pico'
+                    '💡 Usar dashboard para identificar horas pico'
                 ]
             },
             semi_digital: {
-                name: 'PACK SEMI-DIGITAL PRO',
-                icon: '⚡',
-                setup: 950,
-                monthly: 500,
+                name: 'PACK SEMI-DIGITAL PRO', icon: '⚡', setup: 950, monthly: 500,
                 desc: 'WhatsApp Pro + Automatización con prioridad en entrega.',
                 features: [
                     '✅ Todo lo del Pack Automatización',
@@ -944,10 +849,7 @@
                 ]
             },
             completo: {
-                name: 'PACK COMPLETO',
-                icon: '🎯',
-                setup: 1200,
-                monthly: 600,
+                name: 'PACK COMPLETO', icon: '🎯', setup: 1200, monthly: 600,
                 desc: 'Todo el embudo: presencia, WhatsApp Pro, IA, contenido mensual y reportes.',
                 features: [
                     '✅ Todo lo del Pack Semi-Digital Pro',
@@ -971,10 +873,7 @@
                 ]
             },
             growth: {
-                name: 'PACK GROWTH',
-                icon: '🚀',
-                setup: 1500,
-                monthly: 600,
+                name: 'PACK GROWTH', icon: '🚀', setup: 1500, monthly: 600,
                 desc: 'Para negocios que facturan >15K MAD y quieren crecer con ads.',
                 features: [
                     '✅ Todo lo del Pack Completo',
@@ -999,10 +898,7 @@
                 ]
             },
             enterprise: {
-                name: 'PACK ENTERPRISE',
-                icon: '💎',
-                setup: 2500,
-                monthly: 1000,
+                name: 'PACK ENTERPRISE', icon: '💎', setup: 2500, monthly: 1000,
                 desc: 'Para hoteles, cadenas y negocios que quieren dominar el mercado.',
                 features: [
                     '✅ Todo lo del Pack Growth',
@@ -1029,7 +925,6 @@
                 ]
             }
         };
-
         function updateProgress() {
             const pct = ((currentStep) / (totalSteps - 1)) * 100;
             document.getElementById('progressFill').style.width = pct + '%';
@@ -1040,46 +935,44 @@
                 else if (i === currentStep) dot.classList.add('active');
             }
         }
-
         function showStep(step) {
             for (let i = 0; i <= 6; i++) {
                 const el = document.getElementById('step' + i);
                 if (el) el.classList.add('hidden');
             }
-            const el = document.getElementById('step' + step);
-            if (el) {
-                el.classList.remove('hidden');
-                el.classList.add('fade-in');
+            const resultado = document.getElementById('resultado');
+            if (resultado) resultado.classList.add('hidden');
+            if (step === 7) {
+                if (resultado) {
+                    resultado.classList.remove('hidden');
+                    resultado.classList.add('fade-in');
+                }
+            } else {
+                const el = document.getElementById('step' + step);
+                if (el) {
+                    el.classList.remove('hidden');
+                    el.classList.add('fade-in');
+                }
             }
             currentStep = step;
             updateProgress();
         }
-
         function selectOption(step, value) {
             answers[step] = value;
-
-            // Marcar visualmente
             const card = document.getElementById('step' + step);
             const options = card.querySelectorAll('.option');
             options.forEach(opt => opt.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
-
-            // Delay para mostrar selección, luego avanzar
             setTimeout(() => {
-                if (step === 0 && value === 'primera_visita') {
-                    // Modo primera visita: solo recopilar datos, no diagnosticar
-                    showStep(6); // Ir a datos del prospecto
-                } else if (step === 0 && value === 'solo_fachada') {
-                    // Solo fachada: guardar lead frío
+                if (step === 0 && (value === 'primera_visita' || value === 'solo_fachada')) {
                     showStep(6);
                 } else if (step < 5) {
                     showStep(step + 1);
                 } else {
-                    showStep(6); // Ir a datos del prospecto
+                    showStep(6);
                 }
             }, 400);
         }
-
         function calcularScore() {
             let score = 0;
             score += scores.whatsapp[answers[1]] || 0;
@@ -1089,10 +982,8 @@
             score += scores.redes[answers[5]] || 0;
             return score;
         }
-
         function determinarPack(score) {
             const facturacion = answers[3];
-
             if (score >= 16 && facturacion === 'factura_40k') return 'enterprise';
             if (score >= 13 && (facturacion === 'factura_15k_40k' || facturacion === 'factura_40k')) return 'growth';
             if (score >= 13) return 'completo';
@@ -1101,91 +992,156 @@
             if (score >= 4) return 'whatsapp_pro';
             return 'presencia';
         }
-
+        function limpiarErrores() {
+            document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('visible'));
+            document.querySelectorAll('input').forEach(i => i.classList.remove('error'));
+        }
+        function mostrarError(idCampo, idError) {
+            document.getElementById(idCampo).classList.add('error');
+            document.getElementById(idError).classList.add('visible');
+        }
         function generarPropuesta() {
-            const nombre = document.getElementById('nombreProspecto').value || 'Sin nombre';
-            const telefono = document.getElementById('telefonoProspecto').value || '';
-            const negocio = document.getElementById('negocioProspecto').value || 'Sin negocio';
-            const tipo = document.getElementById('tipoNegocio').value || 'otro';
-            const ciudad = document.getElementById('ciudadProspecto').value || 'Tetuán';
-
+            limpiarErrores();
+            const nombre = document.getElementById('nombreProspecto').value.trim();
+            const telefono = document.getElementById('telefonoProspecto').value.trim();
+            const negocio = document.getElementById('negocioProspecto').value.trim();
+            const tipo = document.getElementById('tipoNegocio').value;
+            const ciudad = document.getElementById('ciudadProspecto').value.trim();
+            let hasError = false;
+            if (!nombre) { mostrarError('nombreProspecto', 'error-nombre'); hasError = true; }
+            if (!telefono || telefono.replace(/\D/g, '').length < 8) {
+                mostrarError('telefonoProspecto', 'error-telefono');
+                hasError = true;
+            }
+            if (!negocio) { mostrarError('negocioProspecto', 'error-negocio'); hasError = true; }
+            if (hasError) return;
             answers.nombre = nombre;
             answers.telefono = telefono;
             answers.negocio = negocio;
-            answers.tipo = tipo;
-            answers.ciudad = ciudad;
-
+            answers.tipo = tipo || 'otro';
+            answers.ciudad = ciudad || 'Tetuán';
+            const modoReconocimiento = answers[0] === 'primera_visita' || answers[0] === 'solo_fachada';
+            if (modoReconocimiento) {
+                mostrarSeguimiento();
+                return;
+            }
             const score = calcularScore();
             const packKey = determinarPack(score);
             const pack = packs[packKey];
-
             answers.pack = packKey;
             answers.score = score;
-
-            // Renderizar resultado
-            document.getElementById('packIcon').textContent = pack.icon;
-            document.getElementById('packName').textContent = pack.name;
-            document.getElementById('scoreValue').textContent = score;
-            document.getElementById('packPrice').textContent = pack.setup.toLocaleString() + ' MAD';
-            document.getElementById('packMonthly').textContent = '+ ' + pack.monthly.toLocaleString() + ' MAD/mes mantenimiento';
-            document.getElementById('packDesc').textContent = pack.desc;
-
-            // Features
-            const featuresList = document.getElementById('packFeatures');
-            featuresList.innerHTML = '';
-            pack.features.forEach(f => {
-                const li = document.createElement('li');
-                li.innerHTML = f;
-                featuresList.appendChild(li);
-            });
-
-            // Flow
-            const flowContainer = document.getElementById('flowContainer');
-            flowContainer.innerHTML = '';
-            pack.flow.forEach((step, i) => {
-                const div = document.createElement('div');
-                div.className = 'flow-step' + (step.growth ? ' growth' : '');
-                div.innerHTML = `<span class="flow-num">${step.num}</span> ${step.text}`;
-                flowContainer.appendChild(div);
-                if (i < pack.flow.length - 1) {
-                    const arrow = document.createElement('div');
-                    arrow.className = 'flow-arrow';
-                    arrow.textContent = '↓';
-                    flowContainer.appendChild(arrow);
-                }
-            });
-
-            // Growth
-            const growthContainer = document.getElementById('growthContainer');
-            growthContainer.innerHTML = '';
-            pack.growth.forEach(tip => {
-                const div = document.createElement('div');
-                div.className = 'flow-step growth';
-                div.style.borderLeftColor = 'var(--green)';
-                div.innerHTML = tip;
-                growthContainer.appendChild(div);
-            });
-
-            showStep(7); // Mostrar resultado (step7 = id "resultado")
+            renderizarPropuesta(pack, score);
         }
-
+        function mostrarSeguimiento() {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = `
+                <div style="text-align:center; padding:40px 20px;">
+                    <div style="font-size:4rem; margin-bottom:15px;">📋</div>
+                    <h2 style="font-family:'Orbitron',sans-serif; color:var(--cyan); margin-bottom:10px;">
+                        MODO RECONOCIMIENTO
+                    </h2>
+                    <p style="color:var(--text-dim); line-height:1.6; margin-bottom:25px;">
+                        Has registrado a <strong style="color:var(--text);">${answers.negocio}</strong> sin datos suficientes 
+                        para una propuesta. Guarda este lead y agenda una segunda visita 
+                        para completar el diagnóstico.
+                    </p>
+                    <div style="background:var(--darker); border-radius:12px; padding:20px; text-align:left; margin-bottom:20px; border:1px solid var(--border);">
+                        <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:10px; font-family:'Orbitron',sans-serif;">📊 DATOS REGISTRADOS:</p>
+                        <p style="font-size:0.9rem; margin-bottom:5px;">👤 ${answers.nombre}</p>
+                        <p style="font-size:0.9rem; margin-bottom:5px;">📱 ${answers.telefono}</p>
+                        <p style="font-size:0.9rem; margin-bottom:5px;">🏪 ${answers.negocio}</p>
+                        <p style="font-size:0.9rem; margin-bottom:5px;">📍 ${answers.ciudad}</p>
+                        <p style="font-size:0.9rem;">🏷️ ${answers.tipo}</p>
+                    </div>
+                    <div class="share-btns">
+                        <button class="btn btn-whatsapp" onclick="compartirWhatsAppSeguimiento()">
+                            📱 Enviar mensaje de seguimiento
+                        </button>
+                        <button class="btn btn-save" onclick="guardarLead()">
+                            💾 Guardar lead frío
+                        </button>
+                    </div>
+                    <div style="margin-top:15px;">
+                        <button class="btn btn-secondary" onclick="reiniciar()">
+                            🔄 Nueva Calculadora
+                        </button>
+                    </div>
+                </div>
+            `;
+            showStep(7);
+        }
+        function renderizarPropuesta(pack, score) {
+            const resultado = document.getElementById('resultado');
+            let featuresHtml = pack.features.map(f => `<li>${f}</li>`).join('');
+            let flowHtml = '';
+            pack.flow.forEach((step, i) => {
+                flowHtml += `<div class="flow-step${step.growth ? ' growth' : ''}"><span class="flow-num">${step.num}</span> ${step.text}</div>`;
+                if (i < pack.flow.length - 1) flowHtml += `<div class="flow-arrow">↓</div>`;
+            });
+            let growthHtml = pack.growth.map(tip => `<div class="flow-step growth" style="border-left-color:var(--green);">${tip}</div>`).join('');
+            resultado.innerHTML = `
+                <div class="result-pack">
+                    <div class="pack-icon">${pack.icon}</div>
+                    <div class="pack-name">${pack.name}</div>
+                    <div class="score-badge">
+                        Score de segmentación: <span class="score-value">${score}</span>/20
+                    </div>
+                    <div class="pack-price">${pack.setup.toLocaleString()} MAD</div>
+                    <div class="pack-monthly">+ ${pack.monthly.toLocaleString()} MAD/mes mantenimiento</div>
+                    <div class="pack-desc">${pack.desc}</div>
+                </div>
+                <h3 style="font-size:0.95rem; color:var(--cyan); margin-bottom:12px; font-family:'Orbitron',sans-serif;">✅ INCLUYE:</h3>
+                <ul class="features">${featuresHtml}</ul>
+                <div class="flow-diagram">
+                    <div class="flow-title">📐 FLUJO DE IMPLEMENTACIÓN</div>
+                    ${flowHtml}
+                </div>
+                <div class="flow-diagram">
+                    <div class="flow-title">🚀 GROWTH TIPS</div>
+                    ${growthHtml}
+                </div>
+                <div class="share-btns">
+                    <button class="btn btn-whatsapp" onclick="compartirWhatsApp()">
+                        📱 Compartir por WhatsApp
+                    </button>
+                    <button class="btn btn-save" onclick="guardarLead()">
+                        💾 Guardar Lead
+                    </button>
+                </div>
+                <div style="margin-top:15px;">
+                    <button class="btn btn-secondary" onclick="reiniciar()">
+                        🔄 Nueva Calculadora
+                    </button>
+                </div>
+            `;
+            showStep(7);
+        }
         function compartirWhatsApp() {
             const pack = packs[answers.pack];
             const nombre = answers.nombre || 'Cliente';
             const negocio = answers.negocio || 'su negocio';
-
             const texto = `Hola ${nombre}, soy Yanno de ISA ChatCommerce.%0A%0A` +
-                `Analicé ${negocio} y tengo una propuesta personalizada para usted:%0A%0A` +
+                `Analicé ${negocio} y tengo una propuesta personalizada:%0A%0A` +
                 `🎯 ${pack.name}%0A` +
                 `💰 Setup: ${pack.setup.toLocaleString()} MAD%0A` +
                 `📅 Mantenimiento: ${pack.monthly.toLocaleString()} MAD/mes%0A%0A` +
                 `Incluye:%0A` +
                 pack.features.slice(0, 3).map(f => f.replace('✅ ', '• ')).join('%0A') + '%0A%0A' +
                 `¿Le interesa que le explique los detalles?`;
-
-            window.open(`https://wa.me/${answers.telefono ? answers.telefono.replace(/\D/g, '') : '212786120081'}?text=${texto}`, '_blank');
+            const telefonoLimpio = answers.telefono ? answers.telefono.replace(/\D/g, '') : '212786120081';
+            window.open(`https://wa.me/${telefonoLimpio}?text=${texto}`, '_blank');
         }
-
+        function compartirWhatsAppSeguimiento() {
+            const nombre = answers.nombre || 'Cliente';
+            const negocio = answers.negocio || 'su negocio';
+            const texto = `Hola ${nombre}, soy Yanno de ISA ChatCommerce.%0A%0A` +
+                `Quedé en contactarle sobre ${negocio}.%0A%0A` +
+                `¿Podemos agendar 10 minutos esta semana para conocer más sobre su negocio?%0A` +
+                `Tengo algunas ideas que podrían ayudarle a ganar más clientes.%0A%0A` +
+                `¿Qué día le viene bien?`;
+            const telefonoLimpio = answers.telefono ? answers.telefono.replace(/\D/g, '') : '212786120081';
+            window.open(`https://wa.me/${telefonoLimpio}?text=${texto}`, '_blank');
+        }
         async function guardarLead() {
             const data = {
                 nombre: answers.nombre,
@@ -1193,17 +1149,16 @@
                 negocio: answers.negocio,
                 ciudad: answers.ciudad,
                 tipo_negocio: answers.tipo,
-                pack_recomendado: answers.pack,
-                score_segmentacion: answers.score,
-                whatsapp: answers[1],
-                maps: answers[2],
-                facturacion: answers[3],
-                clientes_dia: answers[4],
-                redes: answers[5],
+                pack_recomendado: answers.pack || 'pendiente',
+                score_segmentacion: answers.score || 0,
+                whatsapp: answers[1] || '',
+                maps: answers[2] || '',
+                facturacion: answers[3] || '',
+                clientes_dia: answers[4] || '',
+                redes: answers[5] || '',
                 fuente: 'calculadora_p0',
-                mensaje: `Pack recomendado: ${packs[answers.pack].name} (${answers.score}/20 puntos)`
+                mensaje: answers.pack ? `Pack recomendado: ${packs[answers.pack].name} (${answers.score}/20 puntos)` : 'Lead frío - modo reconocimiento'
             };
-
             try {
                 const res = await fetch('/api/landing-lead', {
                     method: 'POST',
@@ -1217,26 +1172,23 @@
                     alert('⚠️ Error guardando lead');
                 }
             } catch (e) {
-                // Fallback: copiar al portapapeles
                 const texto = JSON.stringify(data, null, 2);
                 navigator.clipboard.writeText(texto).then(() => {
                     alert('📋 Datos copiados al portapapeles (modo offline). Pégalo en el admin.');
                 });
             }
         }
-
         function reiniciar() {
             Object.keys(answers).forEach(k => delete answers[k]);
             document.getElementById('nombreProspecto').value = '';
             document.getElementById('telefonoProspecto').value = '';
             document.getElementById('negocioProspecto').value = '';
             document.getElementById('tipoNegocio').value = '';
-            document.getElementById('ciudadProspecto').value = '';
+            document.getElementById('ciudadProspecto').value = 'Tetuán';
             document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            limpiarErrores();
             showStep(0);
         }
-
-        // Iniciar
         updateProgress();
     </script>
 </body>
