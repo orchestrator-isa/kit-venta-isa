@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orchestrator ISA — MEDVi: Automatización con IA para WhatsApp</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body { font-family: 'Open Sans', sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* Pop-up de salida */
+.exit-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.exit-popup.active { display: flex; }
+
+/* Pop-up de scroll */
+.scroll-popup {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 90;
+  max-width: 380px;
+}
+.scroll-popup.active { display: block; }
+
+/* Barra de progreso */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #25D366, #00E5FF);
+  z-index: 50;
+  transition: width 0.1s;
+}
+
+/* Timer urgency */
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+}
+.urgency-pulse { animation: pulse-red 2s infinite; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<!-- Barra de progreso de scroll -->
+<div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+<!-- ============================================ -->
+<!-- HERO MEDVi -->
+<!-- ============================================ -->
+<section class="relative min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 overflow-hidden">
+  <div class="absolute inset-0 opacity-20">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-cyan-400 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-emerald-400 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative max-w-6xl mx-auto px-6 pt-20 pb-32 md:pt-32">
+    <!-- Badge urgencia -->
+    <div class="inline-flex items-center gap-2 bg-red-500/20 border border-red-400/30 text-red-300 px-4 py-2 rounded-full text-sm font-semibold mb-6 urgency-pulse">
+      <i class="fas fa-fire"></i>
+      Solo quedan 3 cupos para Junio 2026
+    </div>
+
+    <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 fade-in">
+      Tu negocio responde<br>
+      <span class="text-emerald-400">solo</span> — mientras tú <span class="text-cyan-400">duermes</span>
+    </h1>
+
+    <p class="text-lg md:text-xl text-slate-300 max-w-2xl mb-8 fade-in" style="transition-delay: 0.1s">
+      Sistema MEDVi: 4 IAs trabajando 24/7 para captar, vender, entregar y analizar.<br>
+      Sin contratos. Sin riesgo. Resultados en 48 horas.
+    </p>
+
+    <!-- CTA Principal -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-12 fade-in" style="transition-delay: 0.2s">
+      <button onclick="openPopup('hero')" 
+         class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-4 px-8 rounded-xl text-lg inline-flex items-center justify-center gap-3 hover:shadow-lg hover:shadow-emerald-500/30 transition">
+        <i class="fas fa-robot text-xl"></i>
+        Ver demo de la IA en acción
+      </button>
+      <button onclick="openPopup('calendario')" 
+         class="bg-white/10 backdrop-blur text-white font-semibold py-4 px-8 rounded-xl text-lg inline-flex items-center justify-center gap-2 hover:bg-white/20 transition border border-white/20">
+        <i class="far fa-calendar-alt"></i>
+        Agendar diagnóstico gratuito
+      </button>
+    </div>
+
+    <!-- Trust -->
+    <div class="flex flex-wrap items-center gap-6 text-slate-400 text-sm fade-in" style="transition-delay: 0.3s">
+      <span class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-400"></i> 47 negocios activos</span>
+      <span class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-400"></i> 9,600% ROI promedio</span>
+      <span class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-400"></i> Setup en 48h</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PROBLEMA / SINTOMAS -->
+<!-- ============================================ -->
+<section class="py-20 bg-white">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="text-center mb-12 fade-in">
+      <span class="text-red-500 font-semibold text-sm uppercase tracking-wider">El Problema</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-3">
+        Estás perdiendo clientes cada noche
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 fade-in">
+      <div class="p-6 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-moon text-red-400 text-2xl mb-3"></i>
+        <h3 class="font-bold text-slate-800 mb-2">Cierras a las 10pm</h3>
+        <p class="text-slate-600 text-sm">Los clientes buscan a las 11pm, 2am, 6am. Tu competencia con IA les responde. Tú no.</p>
+      </div>
+      <div class="p-6 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-envelope text-red-400 text-2xl mb-3"></i>
+        <h3 class="font-bold text-slate-800 mb-2">Mensajes perdidos</h3>
+        <p class="text-slate-600 text-sm">10-30 mensajes diarios sin respuesta. Cada uno es un cliente que fue con otro.</p>
+      </div>
+      <div class="p-6 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-search text-red-400 text-2xl mb-3"></i>
+        <h3 class="font-bold text-slate-800 mb-2">Invisible en Google</h3>
+        <p class="text-slate-600 text-sm">Tu ficha de Maps está vacía. Sin fotos, sin reseñas, sin horarios. Nadie te encuentra.</p>
+      </div>
+      <div class="p-6 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-chart-line text-red-400 text-2xl mb-3"></i>
+        <h3 class="font-bold text-slate-800 mb-2">Sin métricas</h3>
+        <p class="text-slate-600 text-sm">No sabes cuántos clientes pierdes, ni por qué, ni cómo arreglarlo. A ciegas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SOLUCIÓN — 4 IAs MEDVi -->
+<!-- ============================================ -->
+<section class="py-20 bg-slate-50">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 fade-in">
+      <span class="text-emerald-600 font-semibold text-sm uppercase tracking-wider">La Solución</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-3">
+        4 IAs que trabajan por ti
+      </h2>
+      <p class="text-slate-500 mt-3">Modelo MEDVi: Múltiples IAs especializadas en paralelo</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- IA 1 -->
+      <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 fade-in">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+            <i class="fas fa-user-plus text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-blue-600 uppercase">IA #1</span>
+            <h3 class="font-bold text-slate-900">Captación</h3>
+          </div>
+        </div>
+        <p class="text-slate-600 text-sm">Atiende leads, hace 3 preguntas de calificación, agenda diagnósticos. Trabaja 24/7 sin descanso.</p>
+        <div class="mt-4 flex gap-2">
+          <span class="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">ChatGPT API</span>
+          <span class="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">ManyChat</span>
+        </div>
+      </div>
+
+      <!-- IA 2 -->
+      <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 fade-in" style="transition-delay: 0.1s">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+            <i class="fas fa-handshake text-emerald-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-emerald-600 uppercase">IA #2</span>
+            <h3 class="font-bold text-slate-900">Vendedor</h3>
+          </div>
+        </div>
+        <p class="text-slate-600 text-sm">Genera propuestas personalizadas, maneja objeciones, cierra ventas. Nunca olvida hacer seguimiento.</p>
+        <div class="mt-4 flex gap-2">
+          <span class="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">GPT-4</span>
+          <span class="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">HubSpot</span>
+        </div>
+      </div>
+
+      <!-- IA 3 -->
+      <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 fade-in" style="transition-delay: 0.2s">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+            <i class="fas fa-truck text-purple-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-purple-600 uppercase">IA #3</span>
+            <h3 class="font-bold text-slate-900">Entregador</h3>
+          </div>
+        </div>
+        <p class="text-slate-600 text-sm">Ejecuta subfases de implementación, monitorea progreso, reporta avance al cliente automáticamente.</p>
+        <div class="mt-4 flex gap-2">
+          <span class="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">Make.com</span>
+          <span class="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">Looker Studio</span>
+        </div>
+      </div>
+
+      <!-- IA 4 -->
+      <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 fade-in" style="transition-delay: 0.3s">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+            <i class="fas fa-chart-pie text-amber-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-amber-600 uppercase">IA #4</span>
+            <h3 class="font-bold text-slate-900">Analista</h3>
+          </div>
+        </div>
+        <p class="text-slate-600 text-sm">Mide métricas, calcula ROI, detecta oportunidades de upselling. Dashboard actualizado cada hora.</p>
+        <div class="mt-4 flex gap-2">
+          <span class="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">Looker Studio</span>
+          <span class="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">Google Sheets</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PROCESO — 5 FASES -->
+<!-- ============================================ -->
+<section class="py-20 bg-white">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-12 fade-in">
+      <span class="text-cyan-600 font-semibold text-sm uppercase tracking-wider">Cómo Funciona</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-3">
+        De invisible a imparable en 5 fases
+      </h2>
+    </div>
+
+    <div class="space-y-8">
+      <div class="flex gap-6 fade-in">
+        <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
+        <div>
+          <h3 class="font-bold text-slate-900 text-lg">Atracción</h3>
+          <p class="text-slate-600">Optimizamos tu Google Maps con fotos profesionales, reseñas de 5 estrellas y palabras clave que te hacen aparecer primero.</p>
+        </div>
+      </div>
+      <div class="flex gap-6 fade-in">
+        <div class="flex-shrink-0 w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
+        <div>
+          <h3 class="font-bold text-slate-900 text-lg">Contacto</h3>
+          <p class="text-slate-600">Convertimos tu WhatsApp personal en profesional. Catálogo con productos, precios, descripciones. Respuestas automáticas 24/7.</p>
+        </div>
+      </div>
+      <div class="flex gap-6 fade-in">
+        <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">3</div>
+        <div>
+          <h3 class="font-bold text-slate-900 text-lg">Conversión</h3>
+          <p class="text-slate-600">Landing page optimizada que convierte visitas en leads. Formularios que filtran clientes calificados. Todo conectado a tu WhatsApp.</p>
+        </div>
+      </div>
+      <div class="flex gap-6 fade-in">
+        <div class="flex-shrink-0 w-12 h-12 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold">4</div>
+        <div>
+          <h3 class="font-bold text-slate-900 text-lg">Automatización</h3>
+          <p class="text-slate-600">Chatbot IA entrenado en darija. Responde en segundos. Agenda reservas automáticamente. Maneja objeciones sin intervención humana.</p>
+        </div>
+      </div>
+      <div class="flex gap-6 fade-in">
+        <div class="flex-shrink-0 w-12 h-12 bg-cyan-600 rounded-full flex items-center justify-center text-white font-bold">5</div>
+        <div>
+          <h3 class="font-bold text-slate-900 text-lg">Escalado</h3>
+          <p class="text-slate-600">Dashboard con métricas reales cada hora. Reporte mensual con ROI. Optimización continua basada en datos, no en suposiciones.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PROOF / DASHBOARD -->
+<!-- ============================================ -->
+<section class="py-20 bg-slate-900">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12 fade-in">
+      <span class="text-emerald-400 font-semibold text-sm uppercase tracking-wider">Resultados Reales</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-white mt-3">
+        Esto no es promesa. Es data.
+      </h2>
+    </div>
+
+    <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 fade-in">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="text-center">
+          <p class="text-4xl font-bold text-emerald-400">47</p>
+          <p class="text-slate-400 text-sm mt-1">Conversaciones hoy</p>
+        </div>
+        <div class="text-center">
+          <p class="text-4xl font-bold text-emerald-400">14</p>
+          <p class="text-slate-400 text-sm mt-1">Pedidos generados</p>
+        </div>
+        <div class="text-center">
+          <p class="text-4xl font-bold text-amber-400">9,600%</p>
+          <p class="text-slate-400 text-sm mt-1">ROI este mes</p>
+        </div>
+        <div class="text-center">
+          <p class="text-4xl font-bold text-amber-400">4.8★</p>
+          <p class="text-slate-400 text-sm mt-1">Google Maps</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center">
+      <button onclick="openPopup('dashboard')" class="text-cyan-400 hover:text-white transition font-semibold">
+        <i class="fas fa-play-circle mr-2"></i>Ver demo del dashboard en vivo
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PACKS -->
+<!-- ============================================ -->
+<section class="py-20 bg-slate-50">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12 fade-in">
+      <span class="text-purple-600 font-semibold text-sm uppercase tracking-wider">Inversión</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-3">
+        Elige tu nivel de automatización
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 fade-in">
+        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">PRESENCIA</span>
+        <div class="mt-4"><span class="text-3xl font-bold">250</span> <span class="text-slate-500">MAD</span></div>
+        <p class="text-slate-400 text-sm">+ 200/mes</p>
+        <ul class="mt-4 space-y-2 text-sm text-slate-600">
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Google Maps optimizado</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>WhatsApp básico</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>1 red social</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-purple-500 relative fade-in" style="transition-delay: 0.1s">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+          <span class="bg-purple-600 text-white px-4 py-1 rounded-full text-xs font-bold">⭐ MÁS VENDIDO</span>
+        </div>
+        <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">SEMI-DIGITAL PRO</span>
+        <div class="mt-4 pt-2"><span class="text-3xl font-bold">950</span> <span class="text-slate-500">MAD</span></div>
+        <p class="text-slate-400 text-sm">+ 500/mes</p>
+        <ul class="mt-4 space-y-2 text-sm text-slate-600">
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Chatbot IA completo</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Flujos conversacionales</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Paleta de colores</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Setup express 48h</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 fade-in" style="transition-delay: 0.2s">
+        <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">GROWTH</span>
+        <div class="mt-4"><span class="text-3xl font-bold">1.500</span> <span class="text-slate-500">MAD</span></div>
+        <p class="text-slate-400 text-sm">+ 600/mes</p>
+        <ul class="mt-4 space-y-2 text-sm text-slate-600">
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Google Ads</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>SEO Avanzado</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Dashboard ROI</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Formación 2h</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- CTA FINAL -->
+<!-- ============================================ -->
+<section class="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <div class="fade-in">
+      <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">
+        ¿Listo para no perder más clientes?
+      </h2>
+      <p class="text-xl text-slate-300 mb-8">
+        Diagnóstico gratuito en 1 hora. Sin compromiso. Sin tarjeta.
+      </p>
+
+      <button onclick="openPopup('final')" 
+         class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-5 px-10 rounded-xl text-xl inline-flex items-center justify-center gap-3 hover:shadow-lg hover:shadow-emerald-500/30 transition mb-4">
+        <i class="fas fa-calendar-check"></i>
+        Agendar mi diagnóstico gratuito
+      </button>
+
+      <p class="text-slate-400 text-sm">
+        <i class="fas fa-shield-alt mr-1"></i> Garantía: si no ves resultados en 30 días, te devolvemos el 100%
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- FOOTER -->
+<!-- ============================================ -->
+<footer class="bg-slate-950 py-12 border-t border-slate-800">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <div class="flex items-center justify-center gap-2 mb-4">
+      <div class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center font-bold text-white text-sm">ISA</div>
+      <span class="text-white font-bold">Orchestrator ISA</span>
+    </div>
+    <p class="text-slate-500 text-sm mb-4">Convierte tu WhatsApp en una máquina de clientes 24/7</p>
+    <div class="flex justify-center gap-4 text-slate-400 text-sm">
+      <a href="https://wa.me/212786120081" class="hover:text-emerald-400 transition"><i class="fab fa-whatsapp mr-1"></i>WhatsApp</a>
+      <a href="mailto:orchestrator.isa@gmail.com" class="hover:text-white transition"><i class="fas fa-envelope mr-1"></i>Email</a>
+    </div>
+    <p class="text-slate-600 text-xs mt-6">© 2026 Orchestrator ISA. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<!-- ============================================ -->
+<!-- POP-UP DE SALIDA (Exit Intent) -->
+<!-- ============================================ -->
+<div class="exit-popup" id="exitPopup">
+  <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+    <div class="text-center">
+      <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-gift text-red-500 text-2xl"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-slate-900 mb-2">¡Espera!</h3>
+      <p class="text-slate-600 mb-6">No te vayas sin tu <strong>descuento exclusivo</strong>. Solo por hoy:</p>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+        <p class="text-amber-800 font-bold text-lg">50% OFF en tu primer mes</p>
+        <p class="text-amber-600 text-sm">Código: <span class="font-mono font-bold">MEDVI50</span></p>
+      </div>
+      <button onclick="openPopup('exit')" class="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl hover:bg-emerald-600 transition">
+        Quiero mi descuento
+      </button>
+      <button onclick="closeExitPopup()" class="mt-3 text-slate-400 text-sm hover:text-slate-600">
+        No, gracias. Prefiero perder clientes.
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- POP-UP DE SCROLL (50% y 80%) -->
+<!-- ============================================ -->
+<div class="scroll-popup" id="scrollPopup">
+  <div class="bg-white rounded-xl p-5 shadow-2xl border border-emerald-200 max-w-sm">
+    <div class="flex items-start gap-3">
+      <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-robot text-emerald-600"></i>
+      </div>
+      <div>
+        <p class="font-semibold text-slate-800 text-sm">¿Te interesa lo que lees?</p>
+        <p class="text-slate-600 text-xs mt-1">Agenda un diagnóstico gratuito y ve cómo la IA puede trabajar para tu negocio.</p>
+        <button onclick="openPopup('scroll')" class="mt-2 text-emerald-600 font-semibold text-sm hover:text-emerald-700">
+          Agendar ahora →
+        </button>
+      </div>
+    </div>
+    <button onclick="closeScrollPopup()" class="absolute top-2 right-2 text-slate-400 hover:text-slate-600">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- FORM MODAL (para todos los CTAs) -->
+<!-- ============================================ -->
+<div id="formModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full p-8 relative">
+    <button onclick="closeFormModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+    <h3 class="text-2xl font-bold text-slate-900 mb-2" id="modalTitle">Agendar diagnóstico</h3>
+    <p class="text-slate-500 text-sm mb-6">Te contactamos en menos de 1 hora.</p>
+
+    <form onsubmit="submitForm(event)" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del negocio</label>
+        <input type="text" name="negocio" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Ej: Café Al Hizam">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Tu nombre</label>
+        <input type="text" name="nombre" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Ej: Mohamed">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+        <input type="tel" name="telefono" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Ej: +212 600 000 000">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de negocio</label>
+        <select name="tipo_negocio" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+          <option>Restaurante / Cafetería</option>
+          <option>Clínica / Estética</option>
+          <option>Peluquería / Barbería</option>
+          <option>Tienda / Boutique</option>
+          <option>Taller / Servicio</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <input type="hidden" name="fuente" value="landing_medvi">
+      <input type="hidden" name="pack_interesado" value="Semi-Digital Pro">
+
+      <button type="submit" class="w-full bg-emerald-500 text-white font-bold py-4 rounded-xl hover:bg-emerald-600 transition">
+        <i class="fab fa-whatsapp mr-2"></i> Enviar y abrir WhatsApp
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- SCRIPTS -->
+<!-- ============================================ -->
+<script>
+// Fade in on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Barra de progreso
+window.addEventListener('scroll', () => {
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  document.getElementById('progressBar').style.width = scrolled + '%';
+
+  // Pop-up de scroll al 50% y 80%
+  if (scrolled > 50 && !window.scrollPopupShown) {
+    document.getElementById('scrollPopup').classList.add('active');
+    window.scrollPopupShown = true;
+  }
+});
+
+// Exit intent (mouseleave hacia arriba)
+document.addEventListener('mouseleave', (e) => {
+  if (e.clientY < 0 && !window.exitPopupShown) {
+    document.getElementById('exitPopup').classList.add('active');
+    window.exitPopupShown = true;
+  }
+});
+
+// Pop-up functions
+function openPopup(source) {
+  document.getElementById('formModal').classList.remove('hidden');
+  document.getElementById('formModal').classList.add('flex');
+  document.getElementById('modalTitle').textContent = 
+    source === 'calendario' ? 'Agendar diagnóstico gratuito' :
+    source === 'dashboard' ? 'Ver demo del dashboard' :
+    source === 'exit' ? 'Quiero mi descuento 50% OFF' :
+    'Agendar diagnóstico gratuito';
+}
+
+function closeFormModal() {
+  document.getElementById('formModal').classList.add('hidden');
+  document.getElementById('formModal').classList.remove('flex');
+}
+
+function closeExitPopup() {
+  document.getElementById('exitPopup').classList.remove('active');
+}
+
+function closeScrollPopup() {
+  document.getElementById('scrollPopup').classList.remove('active');
+}
+
+// Form submission
+async function submitForm(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    negocio: form.negocio.value,
+    nombre: form.nombre.value,
+    telefono: form.telefono.value,
+    tipo_negocio: form.tipo_negocio.value,
+    fuente: form.fuente.value,
+    pack_interesado: form.pack_interesado.value,
+    ciudad: 'Tetuán',
+    mensaje: `Lead MEDVi v2.0: ${form.nombre.value} de ${form.negocio.value}`
+  };
+
+  try {
+    const response = await fetch('/api/landing-lead', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    if (result.status === 'created' || result.status === 'exists') {
+      window.open(result.whatsapp_link, '_blank');
+      closeFormModal();
+      alert('¡Gracias! Te contactaremos en menos de 1 hora.');
+    }
+  } catch (error) {
+    const msg = `Hola, soy ${data.nombre} de ${data.negocio}. Quiero un diagnóstico gratuito.`;
+    window.open(`https://wa.me/212786120081?text=${encodeURIComponent(msg)}`, '_blank');
+    closeFormModal();
+  }
+}
+
+// Smooth scroll
+ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
+</html>
