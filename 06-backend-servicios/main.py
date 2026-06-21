@@ -5,21 +5,22 @@ FastAPI + asyncpg + Neon + 2 Landing Pages + Admin + Seguridad
 """
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, Depends, HTTPException
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi import FastAPI, Request, Depends, HTTPException,Form
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text, select, func
 import time
 from collections import defaultdict
-
+from fastapi.templating import Jinja2Templates
 from database import init_db, test_connection, get_db, engine
 from models import LeadScrap, Reservacion
 from admin_router import router as admin_router
 
 # Rate limiting
 request_counts = defaultdict(list)
+templates = Jinja2Templates(directory="templates")
 
 async def rate_limit(request: Request, max_requests: int = 30, window: int = 60):
     client_ip = request.client.host if request.client else "unknown"
@@ -75,33 +76,82 @@ async def landing_medvi_slash():
 
 # API para ambas landings
 @app.post("/api/landing-lead")
-async def create_landing_lead(request: Request, data: dict, db: AsyncSession = Depends(get_db)):
-    await rate_limit(request, max_requests=10, window=60)
-    result = await db.execute(select(LeadScrap).where(LeadScrap.telefono == data.get("telefono", "")))
+async def create_landing_lead(
+    request: Request,
+    nombre: str = Form(""),
+    telefono: str = Form(""),
+    negocio: str = Form(""),
+    ciudad: str = Form("Tetuán"),
+    caso: str = Form("G"),
+    pack_interesado: str = Form("Basico"),
+    pack_recomendado: str = Form(""),
+    score_segmentacion: int = Form(0),
+    tipo_negocio: str = Form(""),
+    fuente: str = Form("landing_principal"),
+    mensaje: str = Form(""),
+    whatsapp: str = Form(""),
+    maps: str = Form(""),
+    facturacion: str = Form(""),
+    clientes_dia: str = Form(""),
+    redes: str = Form(""),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Guarda un lead desde formularios HTML (application/x-www-form-urlencoded).
+    ANTES estaba como 'data: dict' (JSON) → causaba 405/422 en formularios HTML.
+    """
+    # Rate limiting (si tienes la función)
+    # await rate_limit(request, max_requests=10, window=60)
+    
+    # Verificar si ya existe
+    result = await db.execute(
+        select(LeadScrap).where(LeadScrap.telefono == telefono)
+    )
     existing = result.scalar_one_or_none()
     if existing:
         return {"status": "exists", "id": existing.id}
 
+    # Crear lead
     lead = LeadScrap(
-        nombre_negocio=data.get("negocio", "Sin nombre"),
-        telefono=data.get("telefono", ""),
-        ciudad=data.get("ciudad", "Tetuán"),
-        caso=data.get("caso", "G"),
-        pack_asignado=data.get("pack_interesado", "Basico"),
+        nombre_negocio=negocio or "Sin nombre",
+        telefono=telefono,
+        ciudad=ciudad,
+        caso=caso,
+        pack_asignado=pack_interesado or pack_recomendado or "Basico",
         estado="nuevo",
-        fuente=data.get("fuente", "landing_principal"),
-        mensaje_personalizado=data.get("mensaje"),
-        notas=f"Tipo: {data.get('tipo_negocio', 'No especificado')}. Landing: {data.get('fuente', 'principal')}"
+        fuente=fuente,
+        mensaje_personalizado=mensaje,
+        notas=(
+            f"Tipo: {tipo_negocio or 'No especificado'}. "
+            f"Landing: {fuente}. "
+            f"WhatsApp: {whatsapp}. Maps: {maps}. "
+            f"Facturación: {facturacion}. Clientes/día: {clientes_dia}. "
+            f"Redes: {redes}. Score: {score_segmentacion}"
+        )
     )
     db.add(lead)
     await db.commit()
     await db.refresh(lead)
-    return {"status": "created", "id": lead.id, "whatsapp_link": f"https://wa.me/212786120081?text=Hola%2C%20soy%20{data.get('nombre', '')}%20de%20{data.get('negocio', '')}"}
+    
+    # Generar link WhatsApp
+    nombre_url = (nombre or "").replace(" ", "%20")
+    negocio_url = (negocio or "").replace(" ", "%20")
+    whatsapp_text = f"Hola, soy {nombre_url} de {negocio_url}"
+    
+    return {
+        "status": "created",
+        "id": lead.id,
+        "whatsapp_link": f"https://wa.me/212786120081?text={whatsapp_text}"
+    }
 
 @app.get("/api/landing-stats")
 async def landing_stats(db: AsyncSession = Depends(get_db)):
     total = await db.execute(select(func.count()).select_from(LeadScrap))
     return {"total_leads": total.scalar(), "negocios_activos": 50, "satisfaccion": "4.9/5"}
+
+@app.get("/calculadora", response_class=HTMLResponse)
+async def calculadora_page(request: Request):
+    return templates.TemplateResponse("calculadora.html", {"request": request})
 
 # Diagnóstico
 @app.get("/diagnostic")

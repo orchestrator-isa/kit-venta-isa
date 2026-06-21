@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Calculadora de Segmentación P0 — ISA ChatCommerce</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyan: #00E5FF;
+            --green: #00FF88;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --card: #111122;
+            --card-hover: #1a1a33;
+            --text: #e0e0ff;
+            --text-dim: #8899aa;
+            --border: #222244;
+            --gradient: linear-gradient(135deg, var(--cyan), var(--green));
+            --glow-cyan: 0 0 20px rgba(0,229,255,0.3);
+            --glow-green: 0 0 20px rgba(0,255,136,0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Stars background */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .star {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .header .rocket {
+            font-size: 3rem;
+            animation: float 3s ease-in-out infinite;
+            display: inline-block;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 10px;
+        }
+        .header p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            max-width: 600px;
+            margin: 0 auto 20px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .progress-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+        .step-dot {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: var(--border);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .step-dot.active {
+            background: var(--cyan);
+            border-color: var(--cyan);
+            color: var(--dark);
+            box-shadow: var(--glow-cyan);
+        }
+        .step-dot.completed {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--dark);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Card */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 30px rgba(0,229,255,0.1);
+        }
+
+        /* Step title */
+        .step-number {
+            display: inline-block;
+            background: var(--gradient);
+            color: var(--dark);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .step-desc {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Options */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            background: var(--darker);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .option:hover {
+            border-color: var(--cyan);
+            background: rgba(0,229,255,0.05);
+            transform: translateX(4px);
+        }
+        .option.selected {
+            border-color: var(--green);
+            background: rgba(0,255,136,0.1);
+            box-shadow: var(--glow-green);
+        }
+        .option-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+        .option-text {
+            flex: 1;
+        }
+        .option-text strong {
+            display: block;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        .option-text span {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+        .option-check {
+            width: 24px; height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .option.selected .option-check {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--dark);
+        }
+
+        /* Input fields */
+        .input-group {
+            margin-bottom: 16px;
+        }
+        .input-group label {
+            display: block;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--darker);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: var(--glow-cyan);
+        }
+        .input-group input::placeholder {
+            color: #445566;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--dark);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,229,255,0.3);
+        }
+        .btn-secondary {
+            background: var(--card);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+        .btn-secondary:hover {
+            border-color: var(--cyan);
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        /* Result card */
+        .result-pack {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .result-pack .pack-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+        .result-pack .pack-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+        .result-pack .pack-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--green);
+            margin-bottom: 5px;
+        }
+        .result-pack .pack-monthly {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .result-pack .pack-desc {
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Flow diagram */
+        .flow-diagram {
+            background: var(--darker);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .flow-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 10px 14px;
+            background: var(--card);
+            border-radius: 8px;
+            border-left: 3px solid var(--cyan);
+            font-size: 0.85rem;
+        }
+        .flow-step.growth {
+            border-left-color: var(--green);
+        }
+        .flow-step .flow-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--cyan);
+            min-width: 30px;
+        }
+        .flow-arrow {
+            text-align: center;
+            color: var(--cyan);
+            font-size: 1.2rem;
+            margin: 4px 0;
+        }
+
+        /* Features list */
+        .features {
+            list-style: none;
+            margin: 15px 0;
+        }
+        .features li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .features li:last-child { border-bottom: none; }
+        .features li .check {
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        /* Score badge */
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--darker);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+        .score-badge .score-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--green);
+        }
+
+        /* Share buttons */
+        .share-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .share-btns .btn {
+            flex: 1;
+        }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .btn-save {
+            background: var(--card);
+            color: var(--green);
+            border: 2px solid var(--green);
+        }
+
+        /* Hidden */
+        .hidden { display: none !important; }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.1rem; }
+            .card { padding: 18px; }
+            .option { padding: 12px 14px; }
+            .btn-group { flex-direction: column; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="header">
+        <div class="rocket">🚀</div>
+        <h1>CALCULADORA DE SEGMENTACIÓN P0</h1>
+        <p>Diagnostica cualquier negocio en 2 minutos</p>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-steps">
+            <div class="step-dot active" id="dot0">P0</div>
+            <div class="step-dot" id="dot1">1</div>
+            <div class="step-dot" id="dot2">2</div>
+            <div class="step-dot" id="dot3">3</div>
+            <div class="step-dot" id="dot4">4</div>
+            <div class="step-dot" id="dot5">5</div>
+            <div class="step-dot" id="dot6">✓</div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- PASO 0: MODO -->
+        <div class="card fade-in" id="step0">
+            <span class="step-number">PASO 0</span>
+            <h2 class="step-title">¿Qué sabes del negocio?</h2>
+            <p class="step-desc">Selecciona el modo según tu conocimiento previo del prospecto.</p>
+            <div class="options">
+                <div class="option" onclick="selectOption(0, 'primera_visita')">
+                    <div class="option-icon">🔍</div>
+                    <div class="option-text">
+                        <strong>Primera visita</strong>
+                        <span>Acabo de conocer el negocio. Necesito recopilar datos básicos primero.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(0, 'tengo_datos')">
+                    <div class="option-icon">📋</div>
+                    <div class="option-text">
+                        <strong>Ya tengo datos</strong>
+                        <span>Conozco el negocio. Puedo diagnosticar y recomendar ahora.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(0, 'solo_fachada')">
+                    <div class="option-icon">🏪</div>
+                    <div class="option-text">
+                        <strong>Solo vi la fachada</strong>
+                        <span>Pasé por delante. Necesito entrar y hablar con el dueño.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASO 1: WHATSAPP -->
+        <div class="card hidden" id="step1">
+            <span class="step-number">PASO 1</span>
+            <h2 class="step-title">¿Tiene WhatsApp activo?</h2>
+            <p class="step-desc">Verifica el estado de WhatsApp del negocio.</p>
+            <div class="options">
+                <div class="option" onclick="selectOption(1, 'no_whatsapp')">
+                    <div class="option-icon">❌</div>
+                    <div class="option-text">
+                        <strong>No tiene WhatsApp</strong>
+                        <span>Ni personal ni business. Punto de partida cero.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(1, 'whatsapp_personal')">
+                    <div class="option-icon">📱</div>
+                    <div class="option-text">
+                        <strong>WhatsApp personal</strong>
+                        <span>Tiene número pero sin catálogo ni perfil de negocio.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(1, 'whatsapp_business_sin')">
+                    <div class="option-icon">💼</div>
+                    <div class="option-text">
+                        <strong>WhatsApp Business (sin catálogo)</strong>
+                        <span>Perfil de negocio pero sin productos cargados.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(1, 'whatsapp_business_con')">
+                    <div class="option-icon">🛒</div>
+                    <div class="option-text">
+                        <strong>WhatsApp Business + Catálogo</strong>
+                        <span>Todo configurado con productos y precios.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASO 2: GOOGLE MAPS -->
+        <div class="card hidden" id="step2">
+            <span class="step-number">PASO 2</span>
+            <h2 class="step-title">¿Presencia en Google Maps?</h2>
+            <p class="step-desc">Busca el negocio en Google Maps y verifica su estado.</p>
+            <div class="options">
+                <div class="option" onclick="selectOption(2, 'no_maps')">
+                    <div class="option-icon">🗺️❌</div>
+                    <div class="option-text">
+                        <strong>No aparece</strong>
+                        <span>Invisible en Google. Nadie lo encuentra online.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(2, 'maps_sin_reviews')">
+                    <div class="option-icon">📍</div>
+                    <div class="option-text">
+                        <strong>Aparece pero sin reseñas</strong>
+                        <span>Ficha básica, sin calificaciones ni fotos.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(2, 'maps_con_reviews')">
+                    <div class="option-icon">⭐</div>
+                    <div class="option-text">
+                        <strong>Aparece con reseñas</strong>
+                        <span>Tiene calificaciones y al menos 5 reseñas.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASO 3: FACTURACIÓN -->
+        <div class="card hidden" id="step3">
+            <span class="step-number">PASO 3</span>
+            <h2 class="step-title">¿Facturación mensual aproximada?</h2>
+            <p class="step-desc">Estima o pregunta directamente al dueño.</p>
+            <div class="options">
+                <div class="option" onclick="selectOption(3, 'factura_5k')">
+                    <div class="option-icon">💰</div>
+                    <div class="option-text">
+                        <strong>Menos de 5.000 MAD/mes</strong>
+                        <span>Negocio pequeño, recién iniciado o estacional.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(3, 'factura_5k_15k')">
+                    <div class="option-icon">💰💰</div>
+                    <div class="option-text">
+                        <strong>5.000 - 15.000 MAD/mes</strong>
+                        <span>Negocio establecido, flujo constante.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(3, 'factura_15k_40k')">
+                    <div class="option-icon">💰💰💰</div>
+                    <div class="option-text">
+                        <strong>15.000 - 40.000 MAD/mes</strong>
+                        <span>Negocio en crecimiento, listo para escalar.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(3, 'factura_40k')">
+                    <div class="option-icon">💎</div>
+                    <div class="option-text">
+                        <strong>Más de 40.000 MAD/mes</strong>
+                        <span>Negocio grande, hotel, cadena o clínica premium.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASO 4: CLIENTES/DÍA -->
+        <div class="card hidden" id="step4">
+            <span class="step-number">PASO 4</span>
+            <h2 class="step-title">¿Clientes atendidos por día?</h2>
+            <p class="step-desc">Aproximado. Cuenta ventas, reservas o consultas diarias.</p>
+            <div class="options">
+                <div class="option" onclick="selectOption(4, 'clientes_10')">
+                    <div class="option-icon">👤</div>
+                    <div class="option-text">
+                        <strong>Menos de 10</strong>
+                        <span>Poco tráfico. Necesita más visibilidad primero.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(4, 'clientes_10_30')">
+                    <div class="option-icon">👥</div>
+                    <div class="option-text">
+                        <strong>10 - 30</strong>
+                        <span>Flujo moderado. Puede beneficiarse de automatización.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(4, 'clientes_30_50')">
+                    <div class="option-icon">👥👥</div>
+                    <div class="option-text">
+                        <strong>30 - 50</strong>
+                        <span>Buen tráfico. Necesita sistema para no perder ventas.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(4, 'clientes_50')">
+                    <div class="option-icon">🔥</div>
+                    <div class="option-text">
+                        <strong>Más de 50</strong>
+                        <span>Alto volumen. Necesita automatización + ads.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASO 5: REDES SOCIALES -->
+        <div class="card hidden" id="step5">
+            <span class="step-number">PASO 5</span>
+            <h2 class="step-title">¿Redes sociales activas?</h2>
+            <p class="step-desc">¿En qué plataformas tiene presencia el negocio?</p>
+            <div class="options">
+                <div class="option" onclick="selectOption(5, 'redes_ninguna')">
+                    <div class="option-icon">🚫</div>
+                    <div class="option-text">
+                        <strong>Ninguna</strong>
+                        <span>Sin Facebook, Instagram ni TikTok.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(5, 'redes_facebook')">
+                    <div class="option-icon">📘</div>
+                    <div class="option-text">
+                        <strong>Solo Facebook</strong>
+                        <span>Al menos una red, aunque sea básica.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(5, 'redes_instagram')">
+                    <div class="option-icon">📸</div>
+                    <div class="option-text">
+                        <strong>Instagram o TikTok</strong>
+                        <span>Presencia visual activa.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+                <div class="option" onclick="selectOption(5, 'redes_varias')">
+                    <div class="option-icon">🌐</div>
+                    <div class="option-text">
+                        <strong>Varias redes activas</strong>
+                        <span>Facebook + Instagram + TikTok o más.</span>
+                    </div>
+                    <div class="option-check">✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASO 6: DATOS DEL PROSPECTO -->
+        <div class="card hidden" id="step6">
+            <span class="step-number">DATOS DEL PROSPECTO</span>
+            <h2 class="step-title">Información de contacto</h2>
+            <p class="step-desc">Guarda estos datos para seguimiento y generar la propuesta.</p>
+
+            <div class="input-group">
+                <label>Nombre del dueño / contacto</label>
+                <input type="text" id="nombreProspecto" placeholder="Ej: Ahmed Benali">
+            </div>
+            <div class="input-group">
+                <label>Teléfono WhatsApp</label>
+                <input type="tel" id="telefonoProspecto" placeholder="Ej: +212 6XX-XXXXXX">
+            </div>
+            <div class="input-group">
+                <label>Nombre del negocio</label>
+                <input type="text" id="negocioProspecto" placeholder="Ej: Café Al Hizam Al Akhdar">
+            </div>
+            <div class="input-group">
+                <label>Tipo de negocio</label>
+                <select id="tipoNegocio">
+                    <option value="">Selecciona...</option>
+                    <option value="restaurante">🍽️ Restaurante / Café</option>
+                    <option value="tienda">🛍️ Tienda / Comercio</option>
+                    <option value="taller">🔧 Taller / Servicio</option>
+                    <option value="salon">💇 Salón / Spa</option>
+                    <option value="hotel">🏨 Hotel / Riad</option>
+                    <option value="clinica">🏥 Clínica / Farmacia</option>
+                    <option value="otro">📦 Otro</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Ciudad / Zona</label>
+                <input type="text" id="ciudadProspecto" placeholder="Ej: Tetuán, Martil, Chaouen">
+            </div>
+
+            <button class="btn btn-primary" onclick="generarPropuesta()">
+                🚀 GENERAR PROPUESTA PERSONALIZADA
+            </button>
+        </div>
+
+        <!-- RESULTADO: PROPUESTA -->
+        <div class="card hidden" id="resultado">
+            <div class="result-pack">
+                <div class="pack-icon" id="packIcon">📦</div>
+                <div class="pack-name" id="packName">PACK RECOMENDADO</div>
+                <div class="score-badge">
+                    Score de segmentación: <span class="score-value" id="scoreValue">0</span>/20
+                </div>
+                <div class="pack-price" id="packPrice">0 MAD</div>
+                <div class="pack-monthly" id="packMonthly">+ 0 MAD/mes mantenimiento</div>
+                <div class="pack-desc" id="packDesc">Descripción del pack...</div>
+            </div>
+
+            <h3 style="font-size:0.95rem; color:var(--cyan); margin-bottom:12px; font-family:'Orbitron',sans-serif;">
+                ✅ INCLUYE:
+            </h3>
+            <ul class="features" id="packFeatures">
+                <!-- Se llena dinámicamente -->
+            </ul>
+
+            <div class="flow-diagram">
+                <div class="flow-title">📐 FLUJO DE IMPLEMENTACIÓN</div>
+                <div id="flowContainer">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+
+            <div class="flow-diagram">
+                <div class="flow-title">🚀 GROWTH TIPS</div>
+                <div id="growthContainer">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+
+            <div class="share-btns">
+                <button class="btn btn-whatsapp" onclick="compartirWhatsApp()">
+                    📱 Compartir por WhatsApp
+                </button>
+                <button class="btn btn-save" onclick="guardarLead()">
+                    💾 Guardar Lead
+                </button>
+            </div>
+
+            <div style="margin-top:15px;">
+                <button class="btn btn-secondary" onclick="reiniciar()">
+                    🔄 Nueva Calculadora
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Generar estrellas
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.opacity = Math.random() * 0.8 + 0.2;
+            starsContainer.appendChild(star);
+        }
+
+        // Estado
+        let currentStep = 0;
+        const answers = {};
+        const totalSteps = 7; // 0-5 preguntas + datos + resultado
+
+        // Puntuaciones
+        const scores = {
+            whatsapp: { no_whatsapp: 0, whatsapp_personal: 1, whatsapp_business_sin: 2, whatsapp_business_con: 3 },
+            maps: { no_maps: 0, maps_sin_reviews: 1, maps_con_reviews: 2 },
+            facturacion: { factura_5k: 0, factura_5k_15k: 1, factura_15k_40k: 2, factura_40k: 3 },
+            clientes: { clientes_10: 0, clientes_10_30: 1, clientes_30_50: 2, clientes_50: 3 },
+            redes: { redes_ninguna: 0, redes_facebook: 1, redes_instagram: 2, redes_varias: 3 }
+        };
+
+        // Packs
+        const packs = {
+            presencia: {
+                name: 'PACK PRESENCIA',
+                icon: '📍',
+                setup: 250,
+                monthly: 200,
+                desc: 'Para negocios que quieren aparecer en Google Maps y tener WhatsApp Business básico.',
+                features: [
+                    '✅ Google Maps optimizado (fotos, horarios, descripción)',
+                    '✅ WhatsApp Business básico configurado',
+                    '✅ 1 red social creada',
+                    '✅ QR Card digital',
+                    '✅ Capacitación 15 minutos'
+                ],
+                flow: [
+                    { num: '1A.1', text: 'Reclamación y verificación Google Maps', growth: false },
+                    { num: '1A.2', text: 'Instalación WhatsApp Business', growth: false },
+                    { num: '1B', text: 'Optimización de perfiles y fotos', growth: false },
+                    { num: '2A', text: 'Configuración mensaje de bienvenida', growth: false }
+                ],
+                growth: [
+                    '💡 Pedir reseñas a los primeros 10 clientes',
+                    '💡 Publicar 2 posts/semana mínimo',
+                    '💡 Responder todas las reseñas en 24h'
+                ]
+            },
+            whatsapp_pro: {
+                name: 'PACK WHATSAPP PRO',
+                icon: '💬',
+                setup: 400,
+                monthly: 250,
+                desc: 'Para negocios que ya tienen presencia pero necesitan catálogo y respuestas automáticas.',
+                features: [
+                    '✅ Todo lo del Pack Presencia',
+                    '✅ Catálogo de productos (hasta 50 items)',
+                    '✅ Respuestas automáticas (10 preguntas)',
+                    '✅ Mensaje de bienvenida 24/7',
+                    '✅ Ajustes mensuales de catálogo'
+                ],
+                flow: [
+                    { num: '1A.1', text: 'Google Maps optimizado', growth: false },
+                    { num: '1B', text: 'WhatsApp Business Pro', growth: false },
+                    { num: '2A', text: 'Catálogo de productos', growth: false },
+                    { num: '2B', text: 'Respuestas automáticas', growth: false }
+                ],
+                growth: [
+                    '💡 Actualizar precios cada semana',
+                    '💡 Añadir 5 productos nuevos al mes',
+                    '💡 Usar respuestas rápidas para preguntas frecuentes'
+                ]
+            },
+            automatizacion: {
+                name: 'PACK AUTOMATIZACIÓN',
+                icon: '🤖',
+                setup: 700,
+                monthly: 400,
+                desc: 'Chatbot con IA, flujos conversacionales y dashboard básico.',
+                features: [
+                    '✅ Todo lo del Pack WhatsApp Pro',
+                    '✅ Chatbot con IA (responde preguntas complejas)',
+                    '✅ Flujos conversacionales personalizados',
+                    '✅ Dashboard básico de métricas',
+                    '✅ Optimización mensual del modelo IA'
+                ],
+                flow: [
+                    { num: '1A.1', text: 'Google Maps + WhatsApp Pro', growth: false },
+                    { num: '2A', text: 'Catálogo digital', growth: false },
+                    { num: '3A', text: 'Chatbot IA configurado', growth: false },
+                    { num: '3B', text: 'Flujos de conversación', growth: false }
+                ],
+                growth: [
+                    '💡 Revisar conversaciones "perdidas" semanalmente',
+                    '💡 Añadir nuevas intenciones cada mes',
+                    '💡 Usar el dashboard para identificar horas pico'
+                ]
+            },
+            semi_digital: {
+                name: 'PACK SEMI-DIGITAL PRO',
+                icon: '⚡',
+                setup: 950,
+                monthly: 500,
+                desc: 'WhatsApp Pro + Automatización con prioridad en entrega.',
+                features: [
+                    '✅ Todo lo del Pack Automatización',
+                    '✅ Setup express (prioridad)',
+                    '✅ Paleta de colores + tipografías gratis',
+                    '✅ Landing page básica incluida',
+                    '✅ Ahorro: 150 MAD en setup + 150 MAD/mes'
+                ],
+                flow: [
+                    { num: '1A.1', text: 'Google Maps + WhatsApp Pro', growth: false },
+                    { num: '2A', text: 'Catálogo + Automatización', growth: false },
+                    { num: '3A', text: 'Landing page básica', growth: false },
+                    { num: '3B', text: 'Dashboard + Reportes', growth: false }
+                ],
+                growth: [
+                    '💡 Ofrecer upsell a Pack Completo en mes 3',
+                    '💡 Medir conversiones landing → WhatsApp',
+                    '💡 A/B test en mensajes de bienvenida'
+                ]
+            },
+            completo: {
+                name: 'PACK COMPLETO',
+                icon: '🎯',
+                setup: 1200,
+                monthly: 600,
+                desc: 'Todo el embudo: presencia, WhatsApp Pro, IA, contenido mensual y reportes.',
+                features: [
+                    '✅ Todo lo del Pack Semi-Digital Pro',
+                    '✅ Contenido mensual (4 posts + 2 reels)',
+                    '✅ SEO local avanzado (Top 3 Google Maps)',
+                    '✅ Reporte mensual completo con ROI',
+                    '✅ Landing page profesional'
+                ],
+                flow: [
+                    { num: '1A.1', text: 'Google Maps optimizado', growth: false },
+                    { num: '1B', text: 'WhatsApp Business Pro', growth: false },
+                    { num: '2A', text: 'Catálogo + Chatbot IA', growth: false },
+                    { num: '3A', text: 'Landing page + Formularios', growth: false },
+                    { num: '3B', text: 'Dashboard + Reportes', growth: false },
+                    { num: '3C', text: 'Contenido mensual', growth: false }
+                ],
+                growth: [
+                    '💡 Escalar a Pack Growth con Google Ads',
+                    '💡 Implementar programa de referidos',
+                    '💡 Añadir sistema de reservas online'
+                ]
+            },
+            growth: {
+                name: 'PACK GROWTH',
+                icon: '🚀',
+                setup: 1500,
+                monthly: 600,
+                desc: 'Para negocios que facturan >15K MAD y quieren crecer con ads.',
+                features: [
+                    '✅ Todo lo del Pack Completo',
+                    '✅ Google Ads Local (campañas optimizadas)',
+                    '✅ SEO Local Avanzado (Top 3 Google Maps)',
+                    '✅ Programa de Referidos Premium',
+                    '✅ Dashboard con ROI en tiempo real',
+                    '✅ 1 sesión de formación (2 horas)'
+                ],
+                flow: [
+                    { num: '1A.1', text: 'Google Maps + WhatsApp Pro', growth: false },
+                    { num: '2A', text: 'Catálogo + Chatbot IA', growth: false },
+                    { num: '3A', text: 'Landing + Contenido', growth: false },
+                    { num: '4A', text: 'Google Ads Local', growth: true },
+                    { num: '4B', text: 'SEO Avanzado + Referidos', growth: true },
+                    { num: '5A', text: 'Dashboard ROI + Formación', growth: true }
+                ],
+                growth: [
+                    '🚀 Escalar presupuesto ads según ROI',
+                    '🚀 Añadir campañas en Instagram/Facebook',
+                    '🚀 Implementar funnel de retargeting'
+                ]
+            },
+            enterprise: {
+                name: 'PACK ENTERPRISE',
+                icon: '💎',
+                setup: 2500,
+                monthly: 1000,
+                desc: 'Para hoteles, cadenas y negocios que quieren dominar el mercado.',
+                features: [
+                    '✅ Todo lo del Pack Growth',
+                    '✅ Google Ads Avanzado + Seguimiento',
+                    '✅ SEO Multilingüe (AR/FR/ES/EN)',
+                    '✅ 8 posts/mes + 4 reels premium',
+                    '✅ Gestión de comunidad en redes privadas',
+                    '✅ Formación avanzada (4 horas)',
+                    '✅ Soporte 24/7 prioritario'
+                ],
+                flow: [
+                    { num: '1A.1', text: 'Google Maps Multilingüe', growth: false },
+                    { num: '2A', text: 'WhatsApp Pro + Chatbot IA', growth: false },
+                    { num: '3A', text: 'Landing + Contenido Premium', growth: false },
+                    { num: '4A', text: 'Google Ads Avanzado', growth: true },
+                    { num: '4B', text: 'SEO Multilingüe', growth: true },
+                    { num: '5A', text: 'Comunidad + Formación', growth: true },
+                    { num: '6A', text: 'Soporte 24/7 + Escalado', growth: true }
+                ],
+                growth: [
+                    '💎 Dominar 3+ idiomas en búsquedas locales',
+                    '💎 Crear programa de embajadores de marca',
+                    '💎 Implementar IA para predicción de demanda'
+                ]
+            }
+        };
+
+        function updateProgress() {
+            const pct = ((currentStep) / (totalSteps - 1)) * 100;
+            document.getElementById('progressFill').style.width = pct + '%';
+            for (let i = 0; i < totalSteps; i++) {
+                const dot = document.getElementById('dot' + i);
+                dot.classList.remove('active', 'completed');
+                if (i < currentStep) dot.classList.add('completed');
+                else if (i === currentStep) dot.classList.add('active');
+            }
+        }
+
+        function showStep(step) {
+            for (let i = 0; i <= 6; i++) {
+                const el = document.getElementById('step' + i);
+                if (el) el.classList.add('hidden');
+            }
+            const el = document.getElementById('step' + step);
+            if (el) {
+                el.classList.remove('hidden');
+                el.classList.add('fade-in');
+            }
+            currentStep = step;
+            updateProgress();
+        }
+
+        function selectOption(step, value) {
+            answers[step] = value;
+
+            // Marcar visualmente
+            const card = document.getElementById('step' + step);
+            const options = card.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            // Delay para mostrar selección, luego avanzar
+            setTimeout(() => {
+                if (step === 0 && value === 'primera_visita') {
+                    // Modo primera visita: solo recopilar datos, no diagnosticar
+                    showStep(6); // Ir a datos del prospecto
+                } else if (step === 0 && value === 'solo_fachada') {
+                    // Solo fachada: guardar lead frío
+                    showStep(6);
+                } else if (step < 5) {
+                    showStep(step + 1);
+                } else {
+                    showStep(6); // Ir a datos del prospecto
+                }
+            }, 400);
+        }
+
+        function calcularScore() {
+            let score = 0;
+            score += scores.whatsapp[answers[1]] || 0;
+            score += scores.maps[answers[2]] || 0;
+            score += scores.facturacion[answers[3]] || 0;
+            score += scores.clientes[answers[4]] || 0;
+            score += scores.redes[answers[5]] || 0;
+            return score;
+        }
+
+        function determinarPack(score) {
+            const facturacion = answers[3];
+
+            if (score >= 16 && facturacion === 'factura_40k') return 'enterprise';
+            if (score >= 13 && (facturacion === 'factura_15k_40k' || facturacion === 'factura_40k')) return 'growth';
+            if (score >= 13) return 'completo';
+            if (score >= 10) return 'semi_digital';
+            if (score >= 7) return 'automatizacion';
+            if (score >= 4) return 'whatsapp_pro';
+            return 'presencia';
+        }
+
+        function generarPropuesta() {
+            const nombre = document.getElementById('nombreProspecto').value || 'Sin nombre';
+            const telefono = document.getElementById('telefonoProspecto').value || '';
+            const negocio = document.getElementById('negocioProspecto').value || 'Sin negocio';
+            const tipo = document.getElementById('tipoNegocio').value || 'otro';
+            const ciudad = document.getElementById('ciudadProspecto').value || 'Tetuán';
+
+            answers.nombre = nombre;
+            answers.telefono = telefono;
+            answers.negocio = negocio;
+            answers.tipo = tipo;
+            answers.ciudad = ciudad;
+
+            const score = calcularScore();
+            const packKey = determinarPack(score);
+            const pack = packs[packKey];
+
+            answers.pack = packKey;
+            answers.score = score;
+
+            // Renderizar resultado
+            document.getElementById('packIcon').textContent = pack.icon;
+            document.getElementById('packName').textContent = pack.name;
+            document.getElementById('scoreValue').textContent = score;
+            document.getElementById('packPrice').textContent = pack.setup.toLocaleString() + ' MAD';
+            document.getElementById('packMonthly').textContent = '+ ' + pack.monthly.toLocaleString() + ' MAD/mes mantenimiento';
+            document.getElementById('packDesc').textContent = pack.desc;
+
+            // Features
+            const featuresList = document.getElementById('packFeatures');
+            featuresList.innerHTML = '';
+            pack.features.forEach(f => {
+                const li = document.createElement('li');
+                li.innerHTML = f;
+                featuresList.appendChild(li);
+            });
+
+            // Flow
+            const flowContainer = document.getElementById('flowContainer');
+            flowContainer.innerHTML = '';
+            pack.flow.forEach((step, i) => {
+                const div = document.createElement('div');
+                div.className = 'flow-step' + (step.growth ? ' growth' : '');
+                div.innerHTML = `<span class="flow-num">${step.num}</span> ${step.text}`;
+                flowContainer.appendChild(div);
+                if (i < pack.flow.length - 1) {
+                    const arrow = document.createElement('div');
+                    arrow.className = 'flow-arrow';
+                    arrow.textContent = '↓';
+                    flowContainer.appendChild(arrow);
+                }
+            });
+
+            // Growth
+            const growthContainer = document.getElementById('growthContainer');
+            growthContainer.innerHTML = '';
+            pack.growth.forEach(tip => {
+                const div = document.createElement('div');
+                div.className = 'flow-step growth';
+                div.style.borderLeftColor = 'var(--green)';
+                div.innerHTML = tip;
+                growthContainer.appendChild(div);
+            });
+
+            showStep(7); // Mostrar resultado (step7 = id "resultado")
+        }
+
+        function compartirWhatsApp() {
+            const pack = packs[answers.pack];
+            const nombre = answers.nombre || 'Cliente';
+            const negocio = answers.negocio || 'su negocio';
+
+            const texto = `Hola ${nombre}, soy Yanno de ISA ChatCommerce.%0A%0A` +
+                `Analicé ${negocio} y tengo una propuesta personalizada para usted:%0A%0A` +
+                `🎯 ${pack.name}%0A` +
+                `💰 Setup: ${pack.setup.toLocaleString()} MAD%0A` +
+                `📅 Mantenimiento: ${pack.monthly.toLocaleString()} MAD/mes%0A%0A` +
+                `Incluye:%0A` +
+                pack.features.slice(0, 3).map(f => f.replace('✅ ', '• ')).join('%0A') + '%0A%0A' +
+                `¿Le interesa que le explique los detalles?`;
+
+            window.open(`https://wa.me/${answers.telefono ? answers.telefono.replace(/\D/g, '') : '212786120081'}?text=${texto}`, '_blank');
+        }
+
+        async function guardarLead() {
+            const data = {
+                nombre: answers.nombre,
+                telefono: answers.telefono,
+                negocio: answers.negocio,
+                ciudad: answers.ciudad,
+                tipo_negocio: answers.tipo,
+                pack_recomendado: answers.pack,
+                score_segmentacion: answers.score,
+                whatsapp: answers[1],
+                maps: answers[2],
+                facturacion: answers[3],
+                clientes_dia: answers[4],
+                redes: answers[5],
+                fuente: 'calculadora_p0',
+                mensaje: `Pack recomendado: ${packs[answers.pack].name} (${answers.score}/20 puntos)`
+            };
+
+            try {
+                const res = await fetch('/api/landing-lead', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.status === 'created' || result.status === 'exists') {
+                    alert('✅ Lead guardado correctamente. ID: ' + result.id);
+                } else {
+                    alert('⚠️ Error guardando lead');
+                }
+            } catch (e) {
+                // Fallback: copiar al portapapeles
+                const texto = JSON.stringify(data, null, 2);
+                navigator.clipboard.writeText(texto).then(() => {
+                    alert('📋 Datos copiados al portapapeles (modo offline). Pégalo en el admin.');
+                });
+            }
+        }
+
+        function reiniciar() {
+            Object.keys(answers).forEach(k => delete answers[k]);
+            document.getElementById('nombreProspecto').value = '';
+            document.getElementById('telefonoProspecto').value = '';
+            document.getElementById('negocioProspecto').value = '';
+            document.getElementById('tipoNegocio').value = '';
+            document.getElementById('ciudadProspecto').value = '';
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            showStep(0);
+        }
+
+        // Iniciar
+        updateProgress();
+    </script>
+</body>
+</html>
